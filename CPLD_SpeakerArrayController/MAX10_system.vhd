@@ -188,6 +188,8 @@ architecture ppl_type of MAX10_system is
   signal write_two : std_logic := '0';
   signal second_byte_loaded : std_logic := '0';
   
+  signal temp : std_logic_vector(511 downto 0) := (others => '0');
+  
   
     
   type i2c_state is ( idle,load_first_byte,load_second_byte,
@@ -350,17 +352,17 @@ i2c_component : i2c_master
           
         when load_r =>
           first_byte <= PWM1 & PWM1_COLOR;
-          second_byte <= PWM1 & "11111";
+          second_byte <= ILED_OUTPUT & "11111";
           next_i2c_state <= load_g;
         
         when load_g =>
           first_byte <= PWM2 & PWM2_COLOR;
-          second_byte <= PWM2 & "11111";
+          second_byte <= ILED_OUTPUT & "11111";
           next_i2c_state <= load_b;
           
         when load_b =>
           first_byte <= PWM3 & PWM3_COLOR;
-          second_byte <= PWM3 & "11111";
+          second_byte <= ILED_OUTPUT & "11111";
           next_i2c_state <= idle;
                       
         when load_first_byte =>
