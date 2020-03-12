@@ -79,6 +79,7 @@ component cx_system is
     ics52000_physical_mic_data_in       : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
     ics52000_physical_mic_ws_out        : out std_logic_vector(15 downto 0);                    -- mic_ws_out
     ics52000_physical_clk               : out std_logic_vector(3 downto 0);                      -- clk
+    ics52000_physical_mics_rdy          : out std_logic;
     fe_ics52000_0_cfg_input_data        : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
     fe_ics52000_0_cfg_input_error       : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
     fe_ics52000_0_cfg_input_valid       : in  std_logic                     := 'X';            -- valid
@@ -93,7 +94,25 @@ component cx_system is
   );
 end component cx_system;
   
+component i2c_master IS
+  GENERIC(
+    input_clk : INTEGER := 50_000_000; --input clock speed from user logic in Hz
+    bus_clk   : INTEGER := 10_000);   --speed the i2c bus (scl) will run at in Hz
+  PORT(
+    clk       : IN     STD_LOGIC;                    --system clock
+    reset_n   : IN     STD_LOGIC;                    --active low reset
+    ena       : IN     STD_LOGIC;                    --latch in command
+    addr      : IN     STD_LOGIC_VECTOR(6 DOWNTO 0); --address of target slave
+    rw        : IN     STD_LOGIC;                    --'0' is write, '1' is read
+    data_wr   : IN     STD_LOGIC_VECTOR(7 DOWNTO 0); --data to write to slave
+    busy      : OUT    STD_LOGIC;                    --indicates transaction in progress
+    data_rd   : OUT    STD_LOGIC_VECTOR(7 DOWNTO 0); --data read from slave
+    ack_error : BUFFER STD_LOGIC;                    --flag if improper acknowledge from slave
+    sda       : INOUT  STD_LOGIC;                    --serial data output of i2c bus
+    scl       : INOUT  STD_LOGIC);                   --serial clock output of i2c bus
+END component i2c_master;
 
+  
 
 component FE_Streaming_Counter is
 generic ( 
@@ -127,7 +146,8 @@ end component;
         
   -- I2C logic signals    
   signal i2c_enable           : std_logic;
-  signal i2c_address          : std_logic_vector(6 downto 0) := "0111000";
+--  signal i2c_address          : std_logic_vector(6 downto 0) := "0111000";
+  signal i2c_address          : std_logic_vector(6 downto 0) := "1000000";
   signal i2c_rdwr             : std_logic;
   signal i2c_data_write       : std_logic_vector(7 downto 0) := (others => '0');
   signal i2c_bsy              : std_logic;
@@ -138,9 +158,9 @@ end component;
   signal delay_counter        : unsigned(31 downto 0) := (others => '0');
   signal delay_value          : unsigned(31 downto 0) := x"02FAF080";
         
-  signal ILED_OUTPUT          : std_logic_vector(2 downto 0) := "001";
   signal MAX_OUTPUT           : std_logic_vector(4 downto 0) := "11111";
         
+  signal ILED_OUTPUT          : std_logic_vector(2 downto 0) := "001";
   signal PWM1                 : std_logic_vector(2 downto 0) := "010";
   signal PWM2                 : std_logic_vector(2 downto 0) := "011";
   signal PWM3                 : std_logic_vector(2 downto 0) := "100";
@@ -199,6 +219,7 @@ end component;
   signal mic_data_in : std_logic_vector(15 downto 0) := (others => '0');
   signal mic_ws_out  : std_logic_vector(15 downto 0) := (others => '0');
   signal mic_clk_out : std_logic_vector(3 downto 0) := (others => '0');
+  signal mics_rdy     : std_logic := '0';
 
 begin
 
@@ -235,6 +256,7 @@ pd : cx_system
     ics52000_physical_mic_data_in       => mic_data_in,       --       ics52000_physical.mic_data_in
     ics52000_physical_mic_ws_out        => mic_ws_out,        --                        .mic_ws_out
     ics52000_physical_clk               => mic_clk_out,                --                        .clk
+    ics52000_physical_mics_rdy          => mics_rdy,
     fe_ics52000_0_cfg_input_data        => x"FFFF",        -- fe_ics52000_0_cfg_input.data
     fe_ics52000_0_cfg_input_error       => cfg_error,       --                        .error
     fe_ics52000_0_cfg_input_valid       => cfg_valid,       --                        .valid
@@ -312,7 +334,190 @@ port map (
   data_output_valid    => mic_valid
 );
 
+i2c_component : i2c_master 
+ port map(
+   clk       => CLK_50,
+   reset_n   => RESET_N,
+   ena       => i2c_enable,
+   addr      => i2c_address,
+   rw        => i2c_rdwr,
+   data_wr   => i2c_data_write,
+   busy      => i2c_bsy,
+   data_rd   => i2c_data_read,
+   ack_error => i2c_err,
+   sda       => I2C_SDA,
+   scl       => I2C_SCL
+);  
 
+  -- Process to start the data transmission after X clock cycles
+  counter_process: process(CLK_50,RESET_N)
+  begin
+    if RESET_N = '0' then 
+      delay_counter   <= (others => '0');
+    elsif rising_edge(CLK_50) then 
+    
+      -- If the counter reaches the defined value, pulse the transmit data signal and reset the counter
+      if delay_counter = delay_value then 
+        delay_counter <= (others => '0');
+        i2c_write <= '1';
+      else
+        i2c_write <= '0';
+        delay_counter <= delay_counter + 1;
+      end if;
+    end if;
+  end process;
+ 
+  color_change: process(CLK_50,RESET_N)
+  begin
+    if RESET_N = '0' then 
+      PWM1_COLOR <= "00000";
+      PWM2_COLOR <= "00010";
+      PWM3_COLOR <= "00100";
+    elsif rising_edge(CLK_50) then 
+      if i2c_write = '1' then 
+        if PWM1_COLOR = "11111" then 
+          PWM1_COLOR <= "00000";
+        else 
+          PWM1_COLOR <= std_logic_vector(unsigned(PWM1_COLOR) + 1);
+        end if;
+        if PWM2_COLOR = "11111" then 
+          PWM2_COLOR <= "00000";
+        else 
+          PWM2_COLOR <= std_logic_vector(unsigned(PWM2_COLOR) + 1);
+        end if;
+        if PWM3_COLOR = "11111" then 
+          PWM3_COLOR <= "00000";
+        else 
+          PWM3_COLOR <= std_logic_vector(unsigned(PWM3_COLOR) + 1);
+        end if;
+        
+        -- PWM1_COLOR <= (others => '0');
+        -- PWM2_COLOR <= (others => '0');
+        -- PWM3_COLOR <= (others => '0');
+      end if;
+  
+    end if;
+  end process;
+  
+  i2c_transition_process: process(CLK_50,RESET_N)
+  begin
+    if RESET_N = '0' then 
+      cur_i2c_state <= idle;
+    elsif rising_edge(CLK_50) then 
+      case cur_i2c_state is
+      
+        when init_device =>
+          cur_i2c_state <= i2c_busy_wait;
+          
+        when idle => 
+          if i2c_write = '1' then 
+            cur_i2c_state <= load_r;
+          end if;
+          
+        when load_r =>
+            cur_i2c_state <= load_first_byte;
+        
+        when load_g =>
+            cur_i2c_state <= load_first_byte;
+          
+        when load_b =>
+            cur_i2c_state <= load_first_byte;
+            
+        when load_first_byte =>
+          cur_i2c_state <= i2c_busy_wait;
+          
+        when i2c_busy_wait =>
+          if i2c_bsy = '1' and write_two = '1' and second_byte_loaded = '0' then 
+            cur_i2c_state <= load_second_byte;
+          elsif i2c_bsy = '1' then 
+            cur_i2c_state <= tx_wait;
+          else
+            cur_i2c_state <= i2c_busy_wait;
+          end if;
+          
+        when load_second_byte =>
+          cur_i2c_state <= tx_wait;
+          
+        when tx_wait =>
+          if i2c_bsy = '0' and write_two = '0' then 
+            second_byte_loaded <= '0';
+            cur_i2c_state <= next_i2c_state;
+          elsif i2c_bsy = '0' and second_byte_loaded = '0' then 
+            cur_i2c_state <= i2c_busy_wait;
+            second_byte_loaded <= '1';
+          elsif i2c_bsy = '0' and second_byte_loaded = '1' then 
+            cur_i2c_state <= next_i2c_state;
+            --cur_i2c_state <= i2c_hold;
+            second_byte_loaded <= '0';
+          else 
+            cur_i2c_state <= tx_wait;
+          end if;
+          
+        when others =>
+        
+      end case;
+  
+    end if;
+  end process;
+  
+  i2c_logic_process: process(CLK_50,RESET_N)
+  begin
+    if rising_edge(CLK_50) then 
+      case cur_i2c_state is
+      
+        when init_device =>
+          i2c_rdwr <= '0';
+          i2c_enable <= '1';
+          i2c_data_write <= ILED_OUTPUT & MAX_OUTPUT;
+          second_byte <= ILED_OUTPUT & "11111";
+          write_two <= '0';
+                  
+        when idle => 
+          i2c_enable <= '0';
+          
+        when load_r =>
+          first_byte <= PWM1 & "00000";
+          second_byte <= ILED_OUTPUT & "00111";
+          next_i2c_state <= load_g;
+        
+        when load_g =>
+          first_byte <= PWM2 & "00000";
+          second_byte <= ILED_OUTPUT & "00111";
+          next_i2c_state <= load_b;
+          
+        when load_b =>
+          first_byte <= PWM3 & MAX_OUTPUT;
+          second_byte <= ILED_OUTPUT & "00111";
+          next_i2c_state <= idle;
+                      
+        when load_first_byte =>
+          i2c_rdwr <= '0';
+          i2c_data_write <= first_byte;
+          i2c_enable <= '1';
+          write_two <= '0';
+          
+        when load_second_byte =>
+          i2c_data_write <= second_byte;
+          
+        when i2c_busy_wait =>
+                  
+        when tx_wait =>
+          if second_byte_loaded = '1' then 
+            i2c_enable <= '0';
+          elsif write_two = '0' then 
+            i2c_enable <= '0';
+          else
+            i2c_enable <= '1';
+          end if;
+                
+        when others =>
+        
+        end case;
+  
+    end if;
+  end process;
+  
+  
 -- Map the RJ45 signals
 -- RJ45_SDI  <= rj45_sdo_r; -- CPLD SDI
 -- RJ45_SCK  <= serial_clk; -- CPLD SCK

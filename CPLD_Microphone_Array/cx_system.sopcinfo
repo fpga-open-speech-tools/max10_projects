@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="cx_system" kind="cx_system" version="1.0" fabric="QSYS">
  <!-- Format version 18.0 614 (Future versions may contain additional information.) -->
- <!-- 2020.03.10.11:04:06 -->
+ <!-- 2020.03.10.12:32:31 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1583859846</value>
+  <value>1583865151</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -2348,6 +2348,12 @@ parameters are a RESULT of the module parameters. -->
     <direction>Output</direction>
     <width>4</width>
     <role>clk</role>
+   </port>
+   <port>
+    <name>mics_rdy</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>mics_rdy</role>
    </port>
   </interface>
   <interface name="mic_output" kind="avalon_streaming_source" version="18.0">

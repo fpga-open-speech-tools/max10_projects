@@ -39,6 +39,7 @@ entity cx_system is
 		ics52000_physical_mic_data_in       : in  std_logic_vector(15 downto 0) := (others => '0'); --       ics52000_physical.mic_data_in
 		ics52000_physical_mic_ws_out        : out std_logic_vector(15 downto 0);                    --                        .mic_ws_out
 		ics52000_physical_clk               : out std_logic_vector(3 downto 0);                     --                        .clk
+		ics52000_physical_mics_rdy          : out std_logic;                                        --                        .mics_rdy
 		led_output_led_sd                   : out std_logic;                                        --              led_output.led_sd
 		led_output_led_ws                   : out std_logic;                                        --                        .led_ws
 		mic_input_data                      : in  std_logic_vector(31 downto 0) := (others => '0'); --               mic_input.data
@@ -153,6 +154,7 @@ architecture rtl of cx_system is
 			mic_data_in     : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
 			mic_ws_out      : out std_logic_vector(15 downto 0);                    -- mic_ws_out
 			mic_clk_out     : out std_logic_vector(3 downto 0);                     -- clk
+			mics_rdy        : out std_logic;                                        -- mics_rdy
 			mic_out_channel : out std_logic_vector(5 downto 0);                     -- channel
 			mic_out_data    : out std_logic_vector(31 downto 0);                    -- data
 			mic_out_error   : out std_logic_vector(1 downto 0);                     -- error
@@ -349,6 +351,7 @@ begin
 			mic_data_in     => ics52000_physical_mic_data_in,            -- mic_physical.mic_data_in
 			mic_ws_out      => ics52000_physical_mic_ws_out,             --             .mic_ws_out
 			mic_clk_out     => ics52000_physical_clk,                    --             .clk
+			mics_rdy        => ics52000_physical_mics_rdy,               --             .mics_rdy
 			mic_out_channel => ics52000_mic_output_channel,              --   mic_output.channel
 			mic_out_data    => ics52000_mic_output_data,                 --             .data
 			mic_out_error   => ics52000_mic_output_error,                --             .error
