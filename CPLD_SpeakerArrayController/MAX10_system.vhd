@@ -43,10 +43,10 @@ entity MAX10_system is
 		Arduino_A6 : in std_logic;
 		Arduino_A7 : in std_logic;
 
-		Arduino_IO8 : in std_logic;
+		Arduino_IO8 : inout std_logic;
 		Arduino_IO9 : in std_logic;
 		Arduino_IO10 : in std_logic;
-		Arduino_IO11 : in std_logic;
+		Arduino_IO11 : inout std_logic;
 		Arduino_IO12 : in std_logic;
 		Arduino_IO13 : in std_logic;
 		Arduino_IO1 : in std_logic;
@@ -195,7 +195,7 @@ architecture ppl_type of MAX10_system is
   type i2c_state is ( idle,load_first_byte,load_second_byte,
                       tx_wait,i2c_busy_wait, init_device,
                       load_r, load_g, load_b); 
-  signal cur_i2c_state : i2c_state := init_device;
+  signal cur_i2c_state : i2c_state := idle;
   signal next_i2c_state : i2c_state := idle;
 
 
@@ -206,10 +206,10 @@ u0 : component soc_system
   port map (
     clk_clk                        => CLOCK,
     reset_reset_n                  => RESET_N,
-    pll_mclk_clk                   => DIFFIO_B7N,
-    serial_input_serial_control    => serial_control,
-    serial_input_serial_clk        => DIFFIO_B16N,
-    serial_input_serial_data       => DIFFIO_B16P
+    pll_mclk_clk                   => open,--DIFFIO_B7N,
+    serial_input_serial_control    => open,--serial_control,
+    serial_input_serial_clk        => open,--DIFFIO_B16N,
+    serial_input_serial_data       => open--DIFFIO_B16P
 );
 
 i2c_component : i2c_master 
@@ -223,8 +223,8 @@ i2c_component : i2c_master
    busy      => i2c_bsy,
    data_rd   => i2c_data_read,
    ack_error => i2c_err,
-   sda       => DIFFIO_B3P,
-   scl       => DIFFIO_B3N
+   sda       => Arduino_IO8,
+   scl       => Arduino_IO11
 );  
         
 
@@ -254,21 +254,24 @@ i2c_component : i2c_master
       PWM3_COLOR <= "00100";
     elsif rising_edge(CLOCK) then 
       if i2c_write = '1' then 
-        if PWM1_COLOR = "10000" then 
+        if PWM1_COLOR = "11111" then 
           PWM1_COLOR <= "00000";
         else 
           PWM1_COLOR <= std_logic_vector(unsigned(PWM1_COLOR) + 1);
         end if;
-        if PWM2_COLOR = "10000" then 
+        if PWM2_COLOR = "11111" then 
           PWM2_COLOR <= "00000";
         else 
           PWM2_COLOR <= std_logic_vector(unsigned(PWM2_COLOR) + 1);
         end if;
-        if PWM3_COLOR = "10000" then 
+        if PWM3_COLOR = "11111" then 
           PWM3_COLOR <= "00000";
         else 
           PWM3_COLOR <= std_logic_vector(unsigned(PWM3_COLOR) + 1);
         end if;
+        
+        -- PWM1_COLOR <= (others => '0');
+        -- PWM3_COLOR <= (others => '0');
       end if;
   
     end if;
@@ -345,23 +348,23 @@ i2c_component : i2c_master
           i2c_enable <= '1';
           i2c_data_write <= ILED_OUTPUT & MAX_OUTPUT;
           second_byte <= ILED_OUTPUT & "11111";
-          write_two <= '0';
+          write_two <= '1';
                   
         when idle => 
           i2c_enable <= '0';
           
         when load_r =>
-          first_byte <= PWM1 & PWM1_COLOR;
+          first_byte <= PWM1 & "11111";
           second_byte <= ILED_OUTPUT & "11111";
           next_i2c_state <= load_g;
         
         when load_g =>
-          first_byte <= PWM2 & PWM2_COLOR;
+          first_byte <= PWM2 & "11111";
           second_byte <= ILED_OUTPUT & "11111";
           next_i2c_state <= load_b;
           
         when load_b =>
-          first_byte <= PWM3 & PWM3_COLOR;
+          first_byte <= PWM3 & "11111";
           second_byte <= ILED_OUTPUT & "11111";
           next_i2c_state <= idle;
                       
@@ -391,6 +394,7 @@ i2c_component : i2c_master
   
     end if;
   end process;
+  
     
 end;
 

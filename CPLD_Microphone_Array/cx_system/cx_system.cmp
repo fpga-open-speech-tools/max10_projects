@@ -1,29 +1,58 @@
 	component cx_system is
 		port (
-			altpll_0_locked_conduit_export : out std_logic;                                        -- export
-			bme_input_data                 : in  std_logic_vector(63 downto 0) := (others => 'X'); -- data
-			bme_input_error                : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			bme_input_valid                : in  std_logic                     := 'X';             -- valid
-			cfg_output_data                : out std_logic_vector(63 downto 0);                    -- data
-			cfg_output_error               : out std_logic_vector(1 downto 0);                     -- error
-			cfg_output_valid               : out std_logic;                                        -- valid
-			clk_clk                        : in  std_logic                     := 'X';             -- clk
-			control_conduit_busy_out       : out std_logic;                                        -- busy_out
-			i2c_clk_clk                    : out std_logic;                                        -- clk
-			led_output_led_sd              : out std_logic;                                        -- led_sd
-			led_output_led_ws              : out std_logic;                                        -- led_ws
-			mic_input_data                 : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
-			mic_input_channel              : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- channel
-			mic_input_error                : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			mic_input_valid                : in  std_logic                     := 'X';             -- valid
-			pll_mclk_clk                   : out std_logic;                                        -- clk
-			reset_reset_n                  : in  std_logic                     := 'X';             -- reset_n
-			rgb_output_data                : out std_logic_vector(15 downto 0);                    -- data
-			rgb_output_error               : out std_logic_vector(1 downto 0);                     -- error
-			rgb_output_valid               : out std_logic;                                        -- valid
-			rj45_interface_serial_data_in  : in  std_logic                     := 'X';             -- serial_data_in
-			rj45_interface_serial_data_out : out std_logic;                                        -- serial_data_out
-			serial_clk_clk                 : in  std_logic                     := 'X'              -- clk
+			altpll_0_locked_conduit_export      : out std_logic;                                        -- export
+			bme_input_data                      : in  std_logic_vector(63 downto 0) := (others => 'X'); -- data
+			bme_input_error                     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			bme_input_valid                     : in  std_logic                     := 'X';             -- valid
+			bme_output_data                     : out std_logic_vector(63 downto 0);                    -- data
+			bme_output_error                    : out std_logic_vector(1 downto 0);                     -- error
+			bme_output_valid                    : out std_logic;                                        -- valid
+			cfg_input_data                      : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			cfg_input_error                     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			cfg_input_valid                     : in  std_logic                     := 'X';             -- valid
+			cfg_output_data                     : out std_logic_vector(15 downto 0);                    -- data
+			cfg_output_error                    : out std_logic_vector(1 downto 0);                     -- error
+			cfg_output_valid                    : out std_logic;                                        -- valid
+			clk_clk                             : in  std_logic                     := 'X';             -- clk
+			control_conduit_busy_out            : out std_logic;                                        -- busy_out
+			fe_ics52000_0_cfg_input_data        : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			fe_ics52000_0_cfg_input_error       : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			fe_ics52000_0_cfg_input_valid       : in  std_logic                     := 'X';             -- valid
+			fpga_control_conduit_busy_out       : out std_logic;                                        -- busy_out
+			fpga_rj45_interface_serial_data_in  : in  std_logic                     := 'X';             -- serial_data_in
+			fpga_rj45_interface_serial_data_out : out std_logic;                                        -- serial_data_out
+			fpga_rj45_interface_serial_clk_out  : out std_logic;                                        -- serial_clk_out
+			fpga_serial_clk_clk                 : in  std_logic                     := 'X';             -- clk
+			i2c_clk_clk                         : out std_logic;                                        -- clk
+			ics52000_mic_output_channel         : out std_logic_vector(5 downto 0);                     -- channel
+			ics52000_mic_output_data            : out std_logic_vector(31 downto 0);                    -- data
+			ics52000_mic_output_error           : out std_logic_vector(1 downto 0);                     -- error
+			ics52000_mic_output_valid           : out std_logic;                                        -- valid
+			ics52000_physical_mic_data_in       : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
+			ics52000_physical_mic_ws_out        : out std_logic_vector(15 downto 0);                    -- mic_ws_out
+			ics52000_physical_clk               : out std_logic_vector(3 downto 0);                     -- clk
+			ics52000_physical_mics_rdy          : out std_logic;                                        -- mics_rdy
+			led_output_led_sd                   : out std_logic;                                        -- led_sd
+			led_output_led_ws                   : out std_logic;                                        -- led_ws
+			mic_input_data                      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
+			mic_input_channel                   : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- channel
+			mic_input_error                     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			mic_input_valid                     : in  std_logic                     := 'X';             -- valid
+			mic_output_channel                  : out std_logic_vector(3 downto 0);                     -- channel
+			mic_output_data                     : out std_logic_vector(31 downto 0);                    -- data
+			mic_output_error                    : out std_logic_vector(1 downto 0);                     -- error
+			mic_output_valid                    : out std_logic;                                        -- valid
+			pll_mclk_clk                        : out std_logic;                                        -- clk
+			reset_reset_n                       : in  std_logic                     := 'X';             -- reset_n
+			rgb_input_data                      : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			rgb_input_error                     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			rgb_input_valid                     : in  std_logic                     := 'X';             -- valid
+			rgb_output_data                     : out std_logic_vector(15 downto 0);                    -- data
+			rgb_output_error                    : out std_logic_vector(1 downto 0);                     -- error
+			rgb_output_valid                    : out std_logic;                                        -- valid
+			rj45_interface_serial_data_in       : in  std_logic                     := 'X';             -- serial_data_in
+			rj45_interface_serial_data_out      : out std_logic;                                        -- serial_data_out
+			serial_clk_clk                      : in  std_logic                     := 'X'              -- clk
 		);
 	end component cx_system;
 
