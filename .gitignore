@@ -22,3 +22,4 @@ incremental_db/
 *.qp_info
 *.qar
 *.tmp
+*.bak
