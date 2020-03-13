@@ -192,7 +192,7 @@ set_instance_assignment -name IO_STANDARD "2.5 V" -to DIFFIO_T6P
 set_instance_assignment -name IO_STANDARD "2.5 V" -to DIFFIO_T10P
 set_instance_assignment -name IO_STANDARD "2.5 V" -to DIFFIO_T10N
 set_instance_assignment -name IO_STANDARD "2.5 V" -to SWITCH1
-set_instance_assignment -name IO_STANDARD "2.5 V" -to RESET_N
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RESET_N
 set_instance_assignment -name IO_STANDARD "2.5 V" -to SWITCH2
 set_instance_assignment -name IO_STANDARD "2.5 V" -to SWITCH3
 set_instance_assignment -name IO_STANDARD "2.5 V" -to SWITCH4
@@ -675,5 +675,98 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[265] -
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[266] -to "i2c_master:i2c_component|scl" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[267] -to "i2c_master:i2c_component|sda" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=268" -section_id auto_signaltap_0
+set_location_assignment PIN_25 -to MICROPHONE_SDI[0]
+set_location_assignment PIN_43 -to MICROPHONE_SDI[1]
+set_location_assignment PIN_57 -to MICROPHONE_SDI[2]
+set_location_assignment PIN_84 -to MICROPHONE_SDI[3]
+set_location_assignment PIN_32 -to MICROPHONE_SDI[4]
+set_location_assignment PIN_38 -to MICROPHONE_SDI[5]
+set_location_assignment PIN_78 -to MICROPHONE_SDI[6]
+set_location_assignment PIN_76 -to MICROPHONE_SDI[7]
+set_location_assignment PIN_6 -to MICROPHONE_SDI[8]
+set_location_assignment PIN_140 -to MICROPHONE_SDI[9]
+set_location_assignment PIN_106 -to MICROPHONE_SDI[10]
+set_location_assignment PIN_100 -to MICROPHONE_SDI[11]
+set_location_assignment PIN_11 -to MICROPHONE_SDI[12]
+set_location_assignment PIN_135 -to MICROPHONE_SDI[13]
+set_location_assignment PIN_119 -to MICROPHONE_SDI[14]
+set_location_assignment PIN_92 -to MICROPHONE_SDI[15]
+set_location_assignment PIN_30 -to MICROPHONE_WS[0]
+set_location_assignment PIN_46 -to MICROPHONE_WS[1]
+set_location_assignment PIN_60 -to MICROPHONE_WS[2]
+set_location_assignment PIN_87 -to MICROPHONE_WS[3]
+set_location_assignment PIN_33 -to MICROPHONE_WS[4]
+set_location_assignment PIN_41 -to MICROPHONE_WS[5]
+set_location_assignment PIN_74 -to MICROPHONE_WS[6]
+set_location_assignment PIN_80 -to MICROPHONE_WS[7]
+set_location_assignment PIN_8 -to MICROPHONE_WS[8]
+set_location_assignment PIN_7 -to MICROPHONE_WS[9]
+set_location_assignment PIN_98 -to MICROPHONE_WS[10]
+set_location_assignment PIN_102 -to MICROPHONE_WS[11]
+set_location_assignment PIN_14 -to MICROPHONE_WS[12]
+set_location_assignment PIN_141 -to MICROPHONE_WS[13]
+set_location_assignment PIN_122 -to MICROPHONE_WS[14]
+set_location_assignment PIN_96 -to MICROPHONE_WS[15]
+set_location_assignment PIN_88 -to MICROPHONE_CLK[0]
+set_location_assignment PIN_89 -to MICROPHONE_CLK[1]
+set_location_assignment PIN_90 -to MICROPHONE_CLK[2]
+set_location_assignment PIN_91 -to MICROPHONE_CLK[3]
+set_location_assignment PIN_62 -to I2C_SDA
+set_location_assignment PIN_66 -to I2C_SCL
+set_location_assignment PIN_55 -to LED_GREEN
+set_location_assignment PIN_59 -to LED_YELLOW
+set_location_assignment PIN_58 -to LVDS_EN
+set_location_assignment PIN_27 -to CLK_50
+set_location_assignment PIN_54 -to RJ45_SDO
+set_location_assignment PIN_52 -to RJ45_SDI
+set_location_assignment PIN_50 -to RJ45_SCK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[10]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[11]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[12]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[13]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[14]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_SDI[15]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_CLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_CLK[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_CLK[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_CLK[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_CLK[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[10]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[11]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[12]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[13]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[14]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MICROPHONE_WS[15]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED_GREEN
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED_YELLOW
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to I2C_SCL
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to I2C_SDA
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LVDS_EN
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLK_50
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RJ45_SDI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RJ45_SDO
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RJ45_SCK
 set_global_assignment -name SLD_FILE db/stp4_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
