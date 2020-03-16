@@ -8,22 +8,22 @@ use IEEE.numeric_std.all;
 
 entity cx_system is
 	port (
-		altpll_0_locked_conduit_export                  : out std_logic;                                        --      altpll_0_locked_conduit.export
-		bme280_i2c_0_bme_output_data                    : out std_logic_vector(95 downto 0);                    --      bme280_i2c_0_bme_output.data
-		bme280_i2c_0_bme_output_error                   : out std_logic_vector(1 downto 0);                     --                             .error
-		bme280_i2c_0_bme_output_valid                   : out std_logic;                                        --                             .valid
-		bme280_i2c_0_control_conduit_busy_out           : out std_logic;                                        -- bme280_i2c_0_control_conduit.busy_out
-		bme280_i2c_0_control_conduit_continuous         : in  std_logic                     := '0';             --                             .continuous
-		bme280_i2c_0_control_conduit_enable             : in  std_logic                     := '0';             --                             .enable
-		bme280_i2c_0_i2c_interface_i2c_ack_error        : in  std_logic                     := '0';             --   bme280_i2c_0_i2c_interface.i2c_ack_error
-		bme280_i2c_0_i2c_interface_i2c_addr             : out std_logic_vector(6 downto 0);                     --                             .i2c_addr
-		bme280_i2c_0_i2c_interface_i2c_busy             : in  std_logic                     := '0';             --                             .i2c_busy
-		bme280_i2c_0_i2c_interface_i2c_data_rd          : in  std_logic_vector(7 downto 0)  := (others => '0'); --                             .i2c_data_rd
-		bme280_i2c_0_i2c_interface_i2c_data_wr          : out std_logic_vector(7 downto 0);                     --                             .i2c_data_wr
-		bme280_i2c_0_i2c_interface_i2c_ena              : out std_logic;                                        --                             .i2c_ena
-		bme280_i2c_0_i2c_interface_writeresponsevalid_n : out std_logic;                                        --                             .writeresponsevalid_n
-		clk_clk                                         : in  std_logic                     := '0';             --                          clk.clk
-		reset_reset_n                                   : in  std_logic                     := '0'              --                        reset.reset_n
+		altpll_0_locked_conduit_export           : out std_logic;                                        --      altpll_0_locked_conduit.export
+		bme280_i2c_0_bme_output_data             : out std_logic_vector(95 downto 0);                    --      bme280_i2c_0_bme_output.data
+		bme280_i2c_0_bme_output_error            : out std_logic_vector(1 downto 0);                     --                             .error
+		bme280_i2c_0_bme_output_valid            : out std_logic;                                        --                             .valid
+		bme280_i2c_0_control_conduit_busy_out    : out std_logic;                                        -- bme280_i2c_0_control_conduit.busy_out
+		bme280_i2c_0_control_conduit_continuous  : in  std_logic                     := '0';             --                             .continuous
+		bme280_i2c_0_control_conduit_enable      : in  std_logic                     := '0';             --                             .enable
+		bme280_i2c_0_i2c_interface_i2c_ack_error : in  std_logic                     := '0';             --   bme280_i2c_0_i2c_interface.i2c_ack_error
+		bme280_i2c_0_i2c_interface_i2c_addr      : out std_logic_vector(6 downto 0);                     --                             .i2c_addr
+		bme280_i2c_0_i2c_interface_i2c_busy      : in  std_logic                     := '0';             --                             .i2c_busy
+		bme280_i2c_0_i2c_interface_i2c_data_rd   : in  std_logic_vector(7 downto 0)  := (others => '0'); --                             .i2c_data_rd
+		bme280_i2c_0_i2c_interface_i2c_data_wr   : out std_logic_vector(7 downto 0);                     --                             .i2c_data_wr
+		bme280_i2c_0_i2c_interface_i2c_ena       : out std_logic;                                        --                             .i2c_ena
+		bme280_i2c_0_i2c_interface_i2c_rw        : out std_logic;                                        --                             .i2c_rw
+		clk_clk                                  : in  std_logic                     := '0';             --                          clk.clk
+		reset_reset_n                            : in  std_logic                     := '0'              --                        reset.reset_n
 	);
 end entity cx_system;
 
@@ -78,7 +78,7 @@ architecture rtl of cx_system is
 			i2c_data_rd      : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_rd
 			i2c_data_wr      : out std_logic_vector(7 downto 0);                     -- i2c_data_wr
 			i2c_ena          : out std_logic;                                        -- i2c_ena
-			i2c_rw           : out std_logic                                         -- writeresponsevalid_n
+			i2c_rw           : out std_logic                                         -- i2c_rw
 		);
 	end component FE_CPLD_BME280_I2C_Reader;
 
@@ -189,21 +189,21 @@ begin
 			input_clk        => 50000000
 		)
 		port map (
-			reset_n          => rst_controller_reset_out_reset_ports_inv,        --           reset.reset_n
-			sys_clk          => clk_clk,                                         --      clock_sink.clk
-			bme_output_data  => bme280_i2c_0_bme_output_data,                    --      bme_output.data
-			bme_output_error => bme280_i2c_0_bme_output_error,                   --                .error
-			bme_output_valid => bme280_i2c_0_bme_output_valid,                   --                .valid
-			busy_out         => bme280_i2c_0_control_conduit_busy_out,           -- control_conduit.busy_out
-			continuous       => bme280_i2c_0_control_conduit_continuous,         --                .continuous
-			enable           => bme280_i2c_0_control_conduit_enable,             --                .enable
-			i2c_ack_error    => bme280_i2c_0_i2c_interface_i2c_ack_error,        --   I2C_Interface.i2c_ack_error
-			i2c_addr         => bme280_i2c_0_i2c_interface_i2c_addr,             --                .i2c_addr
-			i2c_busy         => bme280_i2c_0_i2c_interface_i2c_busy,             --                .i2c_busy
-			i2c_data_rd      => bme280_i2c_0_i2c_interface_i2c_data_rd,          --                .i2c_data_rd
-			i2c_data_wr      => bme280_i2c_0_i2c_interface_i2c_data_wr,          --                .i2c_data_wr
-			i2c_ena          => bme280_i2c_0_i2c_interface_i2c_ena,              --                .i2c_ena
-			i2c_rw           => bme280_i2c_0_i2c_interface_writeresponsevalid_n  --                .writeresponsevalid_n
+			reset_n          => rst_controller_reset_out_reset_ports_inv, --           reset.reset_n
+			sys_clk          => clk_clk,                                  --      clock_sink.clk
+			bme_output_data  => bme280_i2c_0_bme_output_data,             --      bme_output.data
+			bme_output_error => bme280_i2c_0_bme_output_error,            --                .error
+			bme_output_valid => bme280_i2c_0_bme_output_valid,            --                .valid
+			busy_out         => bme280_i2c_0_control_conduit_busy_out,    -- control_conduit.busy_out
+			continuous       => bme280_i2c_0_control_conduit_continuous,  --                .continuous
+			enable           => bme280_i2c_0_control_conduit_enable,      --                .enable
+			i2c_ack_error    => bme280_i2c_0_i2c_interface_i2c_ack_error, --   I2C_Interface.i2c_ack_error
+			i2c_addr         => bme280_i2c_0_i2c_interface_i2c_addr,      --                .i2c_addr
+			i2c_busy         => bme280_i2c_0_i2c_interface_i2c_busy,      --                .i2c_busy
+			i2c_data_rd      => bme280_i2c_0_i2c_interface_i2c_data_rd,   --                .i2c_data_rd
+			i2c_data_wr      => bme280_i2c_0_i2c_interface_i2c_data_wr,   --                .i2c_data_wr
+			i2c_ena          => bme280_i2c_0_i2c_interface_i2c_ena,       --                .i2c_ena
+			i2c_rw           => bme280_i2c_0_i2c_interface_i2c_rw         --                .i2c_rw
 		);
 
 	rst_controller : component altera_reset_controller

@@ -65,7 +65,7 @@ component cx_system is
 			bme280_i2c_0_i2c_interface_i2c_data_rd          : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_rd
 			bme280_i2c_0_i2c_interface_i2c_data_wr          : out std_logic_vector(7 downto 0);                     -- i2c_data_wr
 			bme280_i2c_0_i2c_interface_i2c_ena              : out std_logic;                                        -- i2c_ena
-			bme280_i2c_0_i2c_interface_writeresponsevalid_n : out std_logic;                                        -- writeresponsevalid_n
+			bme280_i2c_0_i2c_interface_i2c_rw                   : out std_logic;                                        -- writeresponsevalid_n
 			clk_clk                                         : in  std_logic                     := 'X';             -- clk
 			reset_reset_n                                   : in  std_logic                     := 'X'              -- reset_n
 	  );
@@ -102,6 +102,9 @@ END component;
   signal i2c_busy : std_logic;
   signal i2c_data_rd : std_logic_vector(7 downto 0);
   signal i2c_ack_error : std_logic;
+  signal bme_enable : std_logic := '1';
+  signal bme_continuous : std_logic := '1';
+  signal bme_busy : std_logic;
 
 begin
 
@@ -110,16 +113,16 @@ begin
 					bme280_i2c_0_bme_output_data                    => bme_data,                    --      bme280_i2c_0_bme_output.data
 					bme280_i2c_0_bme_output_error                   => bme_error,                   --                             .error
 					bme280_i2c_0_bme_output_valid                   => bme_valid,                   --                             .valid
-					bme280_i2c_0_control_conduit_busy_out           => i2c_bsy,           -- bme280_i2c_0_control_conduit.busy_out
-					bme280_i2c_0_control_conduit_continuous         => i2c_enable,         --                             .continuous
-					bme280_i2c_0_control_conduit_enable             => u0_ena,             --                             .enable
+					bme280_i2c_0_control_conduit_busy_out           => bme_busy,           -- bme280_i2c_0_control_conduit.busy_out
+					bme280_i2c_0_control_conduit_continuous         => bme_continuous,         --                             .continuous
+					bme280_i2c_0_control_conduit_enable             => bme_enable,             --                             .enable
 					bme280_i2c_0_i2c_interface_i2c_ack_error        => i2c_ack_error,        --   bme280_i2c_0_i2c_interface.i2c_ack_error
 					bme280_i2c_0_i2c_interface_i2c_addr             => i2c_control.addr,             --                             .i2c_addr
 					bme280_i2c_0_i2c_interface_i2c_busy             => i2c_busy,             --                             .i2c_busy
 					bme280_i2c_0_i2c_interface_i2c_data_rd          => i2c_data_rd,          --                             .i2c_data_rd
 					bme280_i2c_0_i2c_interface_i2c_data_wr          => i2c_control.data_wr,          --                             .i2c_data_wr
 					bme280_i2c_0_i2c_interface_i2c_ena              => i2c_control.ena,  
-					bme280_i2c_0_i2c_interface_writeresponsevalid_n => i2c_control.rw,  --                             .writeresponsevalid_n
+					bme280_i2c_0_i2c_interface_i2c_rw               => i2c_control.rw,  --                             .writeresponsevalid_n
 					clk_clk                                         => CLK_50,                                         --                          clk.clk
 					reset_reset_n                                   => RESET_N                                    --                        reset.reset_n
 			  );		
@@ -139,16 +142,14 @@ port map(
   scl       => I2C_SCL
 );
 
-  mic_valid <= not(mic_valid);
-
-  process (CLOCK, u0_ena)
+  process (CLK_50, u0_ena)
   variable counter : integer := 0;
   begin
-  if rising_edge(CLOCK) then
+  if rising_edge(CLK_50) then
     if u0_ena = '0' then
       u0_ena <= '1';
     end if;
-    DIFFIO_B7N <= bme_data(counter);
+    Microphone_WS(0) <= bme_data(counter);
     counter := counter + 1;
     if counter = 96 then
       counter := 0;
@@ -157,23 +158,7 @@ port map(
 end process;
 
 
---u0_ena <= '1' when u0_ena = '0' else '0';
 
---DIFFIO_B3P  <= i2c_data_clk;
- --DIFFIO_B3N  <= bme_data(39);
- DIFFIO_B16N <= bme_data(0);
- DIFFIO_B12P <= bme_data(41);
--- DIFFIO_B12N <= debug_output(3);
--- DIFFIO_B7P  <= debug_output(4); 
---DIFFIO_B7N  <= CLOCK;
---DIFFIO_B16P <= rj45_sdo_r;
---  DIFFIO_B16N <= mic_valid;
---  DIFFIO_B12N <= bme_data(25);
-
--- DIFFIO_R14P_CLK2P <= i2c_data_clk;
--- DIFFIO_R14N_CLK2N <= i2c_data_clk;
--- DIFFIO_R16P_CLK3P <= i2c_data_clk;
--- DIFFIO_R16N_CLK3N <= i2c_data_clk;
  
 end;
 

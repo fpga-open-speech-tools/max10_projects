@@ -244,7 +244,6 @@
   <parameter name="WIDTH_PHASECOUNTERSELECT" value="" />
  </module>
  <module name="bme280_i2c_0" kind="bme280_i2c" version="1.0" enabled="1">
-  <parameter name="bus_clk" value="200000" />
   <parameter name="input_clk" value="50000000" />
   <parameter name="reads_per_second" value="16" />
   <parameter name="sdo" value="0" />
