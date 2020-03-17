@@ -46,6 +46,7 @@ entity cx_system is
 		ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => '0'); --            ics52000_physical.mic_data_in
 		ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    --                             .mic_ws_out
 		ics52000_physical_clk                    : out std_logic_vector(3 downto 0);                     --                             .clk
+		ics52000_physical_mics_rdy               : out std_logic;                                        --                             .mics_rdy
 		led_output_led_sd                        : out std_logic;                                        --                   led_output.led_sd
 		led_output_led_ws                        : out std_logic;                                        --                             .led_ws
 		mic_input_data                           : in  std_logic_vector(31 downto 0) := (others => '0'); --                    mic_input.data
@@ -160,6 +161,7 @@ architecture rtl of cx_system is
 			mic_data_in     : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
 			mic_ws_out      : out std_logic_vector(15 downto 0);                    -- mic_ws_out
 			mic_clk_out     : out std_logic_vector(3 downto 0);                     -- clk
+			mics_rdy        : out std_logic;                                        -- mics_rdy
 			mic_out_channel : out std_logic_vector(5 downto 0);                     -- channel
 			mic_out_data    : out std_logic_vector(31 downto 0);                    -- data
 			mic_out_error   : out std_logic_vector(1 downto 0);                     -- error
@@ -196,7 +198,7 @@ architecture rtl of cx_system is
 		);
 	end component cx_system_altpll_0;
 
-	component FE_CPLD_BME280_I2C_Reader is
+	component FE_BME280_v1 is
 		generic (
 			sdo              : std_logic := '0';
 			reads_per_second : integer   := 16;
@@ -219,7 +221,7 @@ architecture rtl of cx_system is
 			i2c_ena          : out std_logic;                                        -- i2c_ena
 			i2c_rw           : out std_logic                                         -- i2c_rw
 		);
-	end component FE_CPLD_BME280_I2C_Reader;
+	end component FE_BME280_v1;
 
 	component altera_reset_controller is
 		generic (
@@ -384,6 +386,7 @@ begin
 			mic_data_in     => ics52000_physical_mic_data_in,            -- mic_physical.mic_data_in
 			mic_ws_out      => ics52000_physical_mic_ws_out,             --             .mic_ws_out
 			mic_clk_out     => ics52000_physical_clk,                    --             .clk
+			mics_rdy        => ics52000_physical_mics_rdy,               --             .mics_rdy
 			mic_out_channel => ics52000_mic_output_channel,              --   mic_output.channel
 			mic_out_data    => ics52000_mic_output_data,                 --             .data
 			mic_out_error   => ics52000_mic_output_error,                --             .error
@@ -418,7 +421,7 @@ begin
 			configupdate       => '0'                             --           (terminated)
 		);
 
-	bme280_i2c_0 : component FE_CPLD_BME280_I2C_Reader
+	bme280_i2c_0 : component FE_BME280_v1
 		generic map (
 			sdo              => '0',
 			reads_per_second => 16,

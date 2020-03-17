@@ -244,17 +244,6 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to DIFFIO_B3P -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=1024" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=1024" -section_id auto_signaltap_0
-set_global_assignment -name VHDL_FILE ../../component_library/NCP5623B/Source_Files/FE_NCP5623B_v1.vhd
-set_global_assignment -name VHDL_FILE ../../component_library/I2C/i2c_master.vhd
-set_global_assignment -name SIGNALTAP_FILE output_files/stp1.stp
-set_global_assignment -name SDC_FILE MAX10_System.sdc
-set_global_assignment -name VHDL_FILE ../../component_library/I2S/Source_Files/Gen_Shift_Container.vhd
-set_global_assignment -name VHDL_FILE ../../component_library/I2S/Source_Files/FE_I2S_M9K.vhd
-set_global_assignment -name VHDL_FILE ../../component_library/Speaker_Array/Source_Files/Speaker_Array_Decoder_M9K.vhd
-set_global_assignment -name QIP_FILE soc_system/synthesis/soc_system.qip
-set_global_assignment -name VHDL_FILE MAX10_system.vhd
-set_global_assignment -name QIP_FILE ../../component_library/I2S/Source_Files/I2S_DPR_M9K.qip
-set_global_assignment -name QIP_FILE ../../component_library/Speaker_Array/Source_Files/M9K_Buffer.qip
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "FE_NCP5623B:NCP5623B|cur_i2c_state.enable_wait" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "FE_NCP5623B:NCP5623B|cur_i2c_state.i2c_busy_wait" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to "FE_NCP5623B:NCP5623B|cur_i2c_state.idle" -section_id auto_signaltap_0
@@ -422,5 +411,20 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_global_assignment -name VHDL_FILE ../../component_library/I2C/i2c_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/ICS52000/FE_ICS52000_v1.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/BME280/FE_BME280_v1.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/BME280/FE_BME280_Compensate_Data.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/NCP5623B/Source_Files/FE_NCP5623B_v1.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/I2C/i2c_master.vhd
+set_global_assignment -name SIGNALTAP_FILE output_files/stp1.stp
+set_global_assignment -name SDC_FILE MAX10_System.sdc
+set_global_assignment -name VHDL_FILE ../../component_library/I2S/Source_Files/Gen_Shift_Container.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/I2S/Source_Files/FE_I2S_M9K.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/Speaker_Array/Source_Files/Speaker_Array_Decoder_M9K.vhd
+set_global_assignment -name QIP_FILE soc_system/synthesis/soc_system.qip
+set_global_assignment -name VHDL_FILE MAX10_system.vhd
+set_global_assignment -name QIP_FILE ../../component_library/I2S/Source_Files/I2S_DPR_M9K.qip
+set_global_assignment -name QIP_FILE ../../component_library/Speaker_Array/Source_Files/M9K_Buffer.qip
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

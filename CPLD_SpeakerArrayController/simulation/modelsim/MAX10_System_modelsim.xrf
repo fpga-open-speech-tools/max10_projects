@@ -1,4 +1,8 @@
 vendor_name = ModelSim
+source_file = 1, D:/NIH3Repo/component_library/I2C/i2c_pkg.vhd
+source_file = 1, D:/NIH3Repo/component_library/ICS52000/FE_ICS52000_v1.vhd
+source_file = 1, D:/NIH3Repo/component_library/BME280/FE_BME280_v1.vhd
+source_file = 1, D:/NIH3Repo/component_library/BME280/FE_BME280_Compensate_Data.vhd
 source_file = 1, D:/NIH3Repo/component_library/NCP5623B/Source_Files/FE_NCP5623B_v1.vhd
 source_file = 1, D:/NIH3Repo/component_library/I2C/i2c_master.vhd
 source_file = 1, D:/NIH3Repo/max10_projects/CPLD_SpeakerArrayController/output_files/stp1.stp

@@ -1,5 +1,5 @@
 Info: Starting: Create block symbol file (.bsf)
-Info: qsys-generate C:\Users\wickh\Documents\NIH\max10_projects\CPLD_Microphone_Array\cx_system.qsys --block-symbol-file --output-directory=C:\Users\wickh\Documents\NIH\max10_projects\CPLD_Microphone_Array\cx_system --family="MAX 10" --part=10M08SAE144C8GES
+Info: qsys-generate D:\NIH3Repo\max10_projects\CPLD_Microphone_Array\cx_system.qsys --block-symbol-file --output-directory=D:\NIH3Repo\max10_projects\CPLD_Microphone_Array\cx_system --family="MAX 10" --part=10M08SAE144C8GES
 Progress: Loading CPLD_Microphone_Array/cx_system.qsys
 Progress: Reading input file
 Progress: Adding FE_CPLD_Microphone_Encoder_Decoder_0 [FE_CPLD_Microphone_Encoder_Decoder 1.0]
@@ -23,7 +23,7 @@ Info: qsys-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
 Info: 
 Info: Starting: Create HDL design files for synthesis
-Info: qsys-generate C:\Users\wickh\Documents\NIH\max10_projects\CPLD_Microphone_Array\cx_system.qsys --synthesis=VHDL --output-directory=C:\Users\wickh\Documents\NIH\max10_projects\CPLD_Microphone_Array\cx_system\synthesis --family="MAX 10" --part=10M08SAE144C8GES
+Info: qsys-generate D:\NIH3Repo\max10_projects\CPLD_Microphone_Array\cx_system.qsys --synthesis=VHDL --output-directory=D:\NIH3Repo\max10_projects\CPLD_Microphone_Array\cx_system\synthesis --family="MAX 10" --part=10M08SAE144C8GES
 Progress: Loading CPLD_Microphone_Array/cx_system.qsys
 Progress: Reading input file
 Progress: Adding FE_CPLD_Microphone_Encoder_Decoder_0 [FE_CPLD_Microphone_Encoder_Decoder 1.0]

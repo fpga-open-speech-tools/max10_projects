@@ -38,6 +38,7 @@
 			ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
 			ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    -- mic_ws_out
 			ics52000_physical_clk                    : out std_logic_vector(3 downto 0);                     -- clk
+			ics52000_physical_mics_rdy               : out std_logic;                                        -- mics_rdy
 			led_output_led_sd                        : out std_logic;                                        -- led_sd
 			led_output_led_ws                        : out std_logic;                                        -- led_ws
 			mic_input_data                           : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
