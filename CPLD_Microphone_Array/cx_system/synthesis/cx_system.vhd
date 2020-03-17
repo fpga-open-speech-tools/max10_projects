@@ -8,59 +8,65 @@ use IEEE.numeric_std.all;
 
 entity cx_system is
 	port (
-		altpll_0_locked_conduit_export      : out std_logic;                                        -- altpll_0_locked_conduit.export
-		bme_input_data                      : in  std_logic_vector(63 downto 0) := (others => '0'); --               bme_input.data
-		bme_input_error                     : in  std_logic_vector(1 downto 0)  := (others => '0'); --                        .error
-		bme_input_valid                     : in  std_logic                     := '0';             --                        .valid
-		bme_output_data                     : out std_logic_vector(63 downto 0);                    --              bme_output.data
-		bme_output_error                    : out std_logic_vector(1 downto 0);                     --                        .error
-		bme_output_valid                    : out std_logic;                                        --                        .valid
-		cfg_input_data                      : in  std_logic_vector(15 downto 0) := (others => '0'); --               cfg_input.data
-		cfg_input_error                     : in  std_logic_vector(1 downto 0)  := (others => '0'); --                        .error
-		cfg_input_valid                     : in  std_logic                     := '0';             --                        .valid
-		cfg_output_data                     : out std_logic_vector(15 downto 0);                    --              cfg_output.data
-		cfg_output_error                    : out std_logic_vector(1 downto 0);                     --                        .error
-		cfg_output_valid                    : out std_logic;                                        --                        .valid
-		clk_clk                             : in  std_logic                     := '0';             --                     clk.clk
-		control_conduit_busy_out            : out std_logic;                                        --         control_conduit.busy_out
-		fe_ics52000_0_cfg_input_data        : in  std_logic_vector(15 downto 0) := (others => '0'); -- fe_ics52000_0_cfg_input.data
-		fe_ics52000_0_cfg_input_error       : in  std_logic_vector(1 downto 0)  := (others => '0'); --                        .error
-		fe_ics52000_0_cfg_input_valid       : in  std_logic                     := '0';             --                        .valid
-		fpga_control_conduit_busy_out       : out std_logic;                                        --    fpga_control_conduit.busy_out
-		fpga_rj45_interface_serial_data_in  : in  std_logic                     := '0';             --     fpga_rj45_interface.serial_data_in
-		fpga_rj45_interface_serial_data_out : out std_logic;                                        --                        .serial_data_out
-		fpga_rj45_interface_serial_clk_out  : out std_logic;                                        --                        .serial_clk_out
-		fpga_serial_clk_clk                 : in  std_logic                     := '0';             --         fpga_serial_clk.clk
-		i2c_clk_clk                         : out std_logic;                                        --                 i2c_clk.clk
-		ics52000_mic_output_channel         : out std_logic_vector(5 downto 0);                     --     ics52000_mic_output.channel
-		ics52000_mic_output_data            : out std_logic_vector(31 downto 0);                    --                        .data
-		ics52000_mic_output_error           : out std_logic_vector(1 downto 0);                     --                        .error
-		ics52000_mic_output_valid           : out std_logic;                                        --                        .valid
-		ics52000_physical_mic_data_in       : in  std_logic_vector(15 downto 0) := (others => '0'); --       ics52000_physical.mic_data_in
-		ics52000_physical_mic_ws_out        : out std_logic_vector(15 downto 0);                    --                        .mic_ws_out
-		ics52000_physical_clk               : out std_logic_vector(3 downto 0);                     --                        .clk
-		ics52000_physical_mics_rdy          : out std_logic;                                        --                        .mics_rdy
-		led_output_led_sd                   : out std_logic;                                        --              led_output.led_sd
-		led_output_led_ws                   : out std_logic;                                        --                        .led_ws
-		mic_input_data                      : in  std_logic_vector(31 downto 0) := (others => '0'); --               mic_input.data
-		mic_input_channel                   : in  std_logic_vector(4 downto 0)  := (others => '0'); --                        .channel
-		mic_input_error                     : in  std_logic_vector(1 downto 0)  := (others => '0'); --                        .error
-		mic_input_valid                     : in  std_logic                     := '0';             --                        .valid
-		mic_output_channel                  : out std_logic_vector(3 downto 0);                     --              mic_output.channel
-		mic_output_data                     : out std_logic_vector(31 downto 0);                    --                        .data
-		mic_output_error                    : out std_logic_vector(1 downto 0);                     --                        .error
-		mic_output_valid                    : out std_logic;                                        --                        .valid
-		pll_mclk_clk                        : out std_logic;                                        --                pll_mclk.clk
-		reset_reset_n                       : in  std_logic                     := '0';             --                   reset.reset_n
-		rgb_input_data                      : in  std_logic_vector(15 downto 0) := (others => '0'); --               rgb_input.data
-		rgb_input_error                     : in  std_logic_vector(1 downto 0)  := (others => '0'); --                        .error
-		rgb_input_valid                     : in  std_logic                     := '0';             --                        .valid
-		rgb_output_data                     : out std_logic_vector(15 downto 0);                    --              rgb_output.data
-		rgb_output_error                    : out std_logic_vector(1 downto 0);                     --                        .error
-		rgb_output_valid                    : out std_logic;                                        --                        .valid
-		rj45_interface_serial_data_in       : in  std_logic                     := '0';             --          rj45_interface.serial_data_in
-		rj45_interface_serial_data_out      : out std_logic;                                        --                        .serial_data_out
-		serial_clk_clk                      : in  std_logic                     := '0'              --              serial_clk.clk
+		altpll_0_locked_conduit_export           : out std_logic;                                        --      altpll_0_locked_conduit.export
+		bme280_i2c_0_control_conduit_busy_out    : out std_logic;                                        -- bme280_i2c_0_control_conduit.busy_out
+		bme280_i2c_0_control_conduit_continuous  : in  std_logic                     := '0';             --                             .continuous
+		bme280_i2c_0_control_conduit_enable      : in  std_logic                     := '0';             --                             .enable
+		bme280_i2c_0_i2c_interface_i2c_ack_error : in  std_logic                     := '0';             --   bme280_i2c_0_i2c_interface.i2c_ack_error
+		bme280_i2c_0_i2c_interface_i2c_addr      : out std_logic_vector(6 downto 0);                     --                             .i2c_addr
+		bme280_i2c_0_i2c_interface_i2c_busy      : in  std_logic                     := '0';             --                             .i2c_busy
+		bme280_i2c_0_i2c_interface_i2c_data_rd   : in  std_logic_vector(7 downto 0)  := (others => '0'); --                             .i2c_data_rd
+		bme280_i2c_0_i2c_interface_i2c_data_wr   : out std_logic_vector(7 downto 0);                     --                             .i2c_data_wr
+		bme280_i2c_0_i2c_interface_i2c_ena       : out std_logic;                                        --                             .i2c_ena
+		bme280_i2c_0_i2c_interface_i2c_rw        : out std_logic;                                        --                             .i2c_rw
+		bme_output_data                          : out std_logic_vector(63 downto 0);                    --                   bme_output.data
+		bme_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
+		bme_output_valid                         : out std_logic;                                        --                             .valid
+		cfg_input_data                           : in  std_logic_vector(15 downto 0) := (others => '0'); --                    cfg_input.data
+		cfg_input_error                          : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
+		cfg_input_valid                          : in  std_logic                     := '0';             --                             .valid
+		cfg_output_data                          : out std_logic_vector(15 downto 0);                    --                   cfg_output.data
+		cfg_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
+		cfg_output_valid                         : out std_logic;                                        --                             .valid
+		clk_clk                                  : in  std_logic                     := '0';             --                          clk.clk
+		control_conduit_busy_out                 : out std_logic;                                        --              control_conduit.busy_out
+		fe_ics52000_0_cfg_input_data             : in  std_logic_vector(15 downto 0) := (others => '0'); --      fe_ics52000_0_cfg_input.data
+		fe_ics52000_0_cfg_input_error            : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
+		fe_ics52000_0_cfg_input_valid            : in  std_logic                     := '0';             --                             .valid
+		fpga_control_conduit_busy_out            : out std_logic;                                        --         fpga_control_conduit.busy_out
+		fpga_rj45_interface_serial_data_in       : in  std_logic                     := '0';             --          fpga_rj45_interface.serial_data_in
+		fpga_rj45_interface_serial_data_out      : out std_logic;                                        --                             .serial_data_out
+		fpga_rj45_interface_serial_clk_out       : out std_logic;                                        --                             .serial_clk_out
+		fpga_serial_clk_clk                      : in  std_logic                     := '0';             --              fpga_serial_clk.clk
+		i2c_clk_clk                              : out std_logic;                                        --                      i2c_clk.clk
+		ics52000_mic_output_channel              : out std_logic_vector(5 downto 0);                     --          ics52000_mic_output.channel
+		ics52000_mic_output_data                 : out std_logic_vector(31 downto 0);                    --                             .data
+		ics52000_mic_output_error                : out std_logic_vector(1 downto 0);                     --                             .error
+		ics52000_mic_output_valid                : out std_logic;                                        --                             .valid
+		ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => '0'); --            ics52000_physical.mic_data_in
+		ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    --                             .mic_ws_out
+		ics52000_physical_clk                    : out std_logic_vector(3 downto 0);                     --                             .clk
+		led_output_led_sd                        : out std_logic;                                        --                   led_output.led_sd
+		led_output_led_ws                        : out std_logic;                                        --                             .led_ws
+		mic_input_data                           : in  std_logic_vector(31 downto 0) := (others => '0'); --                    mic_input.data
+		mic_input_channel                        : in  std_logic_vector(4 downto 0)  := (others => '0'); --                             .channel
+		mic_input_error                          : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
+		mic_input_valid                          : in  std_logic                     := '0';             --                             .valid
+		mic_output_channel                       : out std_logic_vector(3 downto 0);                     --                   mic_output.channel
+		mic_output_data                          : out std_logic_vector(31 downto 0);                    --                             .data
+		mic_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
+		mic_output_valid                         : out std_logic;                                        --                             .valid
+		pll_mclk_clk                             : out std_logic;                                        --                     pll_mclk.clk
+		reset_reset_n                            : in  std_logic                     := '0';             --                        reset.reset_n
+		rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => '0'); --                    rgb_input.data
+		rgb_input_error                          : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
+		rgb_input_valid                          : in  std_logic                     := '0';             --                             .valid
+		rgb_output_data                          : out std_logic_vector(15 downto 0);                    --                   rgb_output.data
+		rgb_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
+		rgb_output_valid                         : out std_logic;                                        --                             .valid
+		rj45_interface_serial_data_in            : in  std_logic                     := '0';             --               rj45_interface.serial_data_in
+		rj45_interface_serial_data_out           : out std_logic;                                        --                             .serial_data_out
+		serial_clk_clk                           : in  std_logic                     := '0'              --                   serial_clk.clk
 	);
 end entity cx_system;
 
@@ -69,7 +75,7 @@ architecture rtl of cx_system is
 		generic (
 			avalon_data_width : integer := 32;
 			mic_data_width    : integer := 24;
-			bme_data_width    : integer := 64;
+			bme_data_width    : integer := 96;
 			rgb_data_width    : integer := 16;
 			cfg_data_width    : integer := 16;
 			ch_width          : integer := 4;
@@ -92,7 +98,7 @@ architecture rtl of cx_system is
 			cfg_out_data      : out std_logic_vector(15 downto 0);                    -- data
 			cfg_out_error     : out std_logic_vector(1 downto 0);                     -- error
 			cfg_out_valid     : out std_logic;                                        -- valid
-			bme_input_data    : in  std_logic_vector(63 downto 0) := (others => 'X'); -- data
+			bme_input_data    : in  std_logic_vector(95 downto 0) := (others => 'X'); -- data
 			bme_input_error   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
 			bme_input_valid   : in  std_logic                     := 'X';             -- valid
 			busy_out          : out std_logic;                                        -- busy_out
@@ -154,7 +160,6 @@ architecture rtl of cx_system is
 			mic_data_in     : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
 			mic_ws_out      : out std_logic_vector(15 downto 0);                    -- mic_ws_out
 			mic_clk_out     : out std_logic_vector(3 downto 0);                     -- clk
-			mics_rdy        : out std_logic;                                        -- mics_rdy
 			mic_out_channel : out std_logic_vector(5 downto 0);                     -- channel
 			mic_out_data    : out std_logic_vector(31 downto 0);                    -- data
 			mic_out_error   : out std_logic_vector(1 downto 0);                     -- error
@@ -190,6 +195,31 @@ architecture rtl of cx_system is
 			configupdate       : in  std_logic                     := 'X'              -- export
 		);
 	end component cx_system_altpll_0;
+
+	component FE_CPLD_BME280_I2C_Reader is
+		generic (
+			sdo              : std_logic := '0';
+			reads_per_second : integer   := 16;
+			input_clk        : integer   := 50000000
+		);
+		port (
+			reset_n          : in  std_logic                     := 'X';             -- reset_n
+			sys_clk          : in  std_logic                     := 'X';             -- clk
+			bme_output_data  : out std_logic_vector(95 downto 0);                    -- data
+			bme_output_error : out std_logic_vector(1 downto 0);                     -- error
+			bme_output_valid : out std_logic;                                        -- valid
+			busy_out         : out std_logic;                                        -- busy_out
+			continuous       : in  std_logic                     := 'X';             -- continuous
+			enable           : in  std_logic                     := 'X';             -- enable
+			i2c_ack_error    : in  std_logic                     := 'X';             -- i2c_ack_error
+			i2c_addr         : out std_logic_vector(6 downto 0);                     -- i2c_addr
+			i2c_busy         : in  std_logic                     := 'X';             -- i2c_busy
+			i2c_data_rd      : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_rd
+			i2c_data_wr      : out std_logic_vector(7 downto 0);                     -- i2c_data_wr
+			i2c_ena          : out std_logic;                                        -- i2c_ena
+			i2c_rw           : out std_logic                                         -- i2c_rw
+		);
+	end component FE_CPLD_BME280_I2C_Reader;
 
 	component altera_reset_controller is
 		generic (
@@ -257,10 +287,13 @@ architecture rtl of cx_system is
 		);
 	end component altera_reset_controller;
 
-	signal altpll_0_c1_clk                          : std_logic; -- altpll_0:c1 -> FE_ICS52000_0:mic_clk_in
-	signal rst_controller_reset_out_reset           : std_logic; -- rst_controller:reset_out -> [altpll_0:reset, rst_controller_reset_out_reset:in]
-	signal reset_reset_n_ports_inv                  : std_logic; -- reset_reset_n:inv -> rst_controller:reset_in0
-	signal rst_controller_reset_out_reset_ports_inv : std_logic; -- rst_controller_reset_out_reset:inv -> [FE_CPLD_Microphone_Encoder_Decoder_0:reset_n, FE_FPGA_Microphone_Encoder_Decoder_0:reset_n, FE_ICS52000_0:reset_n]
+	signal bme280_i2c_0_bme_output_valid            : std_logic;                     -- bme280_i2c_0:bme_output_valid -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_valid
+	signal bme280_i2c_0_bme_output_data             : std_logic_vector(95 downto 0); -- bme280_i2c_0:bme_output_data -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_data
+	signal bme280_i2c_0_bme_output_error            : std_logic_vector(1 downto 0);  -- bme280_i2c_0:bme_output_error -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_error
+	signal altpll_0_c1_clk                          : std_logic;                     -- altpll_0:c1 -> FE_ICS52000_0:mic_clk_in
+	signal rst_controller_reset_out_reset           : std_logic;                     -- rst_controller:reset_out -> [altpll_0:reset, rst_controller_reset_out_reset:in]
+	signal reset_reset_n_ports_inv                  : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
+	signal rst_controller_reset_out_reset_ports_inv : std_logic;                     -- rst_controller_reset_out_reset:inv -> [FE_CPLD_Microphone_Encoder_Decoder_0:reset_n, FE_FPGA_Microphone_Encoder_Decoder_0:reset_n, FE_ICS52000_0:reset_n, bme280_i2c_0:reset_n]
 
 begin
 
@@ -268,7 +301,7 @@ begin
 		generic map (
 			avalon_data_width => 32,
 			mic_data_width    => 24,
-			bme_data_width    => 64,
+			bme_data_width    => 96,
 			rgb_data_width    => 16,
 			cfg_data_width    => 16,
 			ch_width          => 5,
@@ -291,9 +324,9 @@ begin
 			cfg_out_data      => cfg_output_data,                          --      cfg_output.data
 			cfg_out_error     => cfg_output_error,                         --                .error
 			cfg_out_valid     => cfg_output_valid,                         --                .valid
-			bme_input_data    => bme_input_data,                           --       bme_input.data
-			bme_input_error   => bme_input_error,                          --                .error
-			bme_input_valid   => bme_input_valid,                          --                .valid
+			bme_input_data    => bme280_i2c_0_bme_output_data,             --       bme_input.data
+			bme_input_error   => bme280_i2c_0_bme_output_error,            --                .error
+			bme_input_valid   => bme280_i2c_0_bme_output_valid,            --                .valid
 			busy_out          => control_conduit_busy_out,                 -- control_conduit.busy_out
 			serial_clk_in     => serial_clk_clk                            --      serial_clk.clk
 		);
@@ -351,7 +384,6 @@ begin
 			mic_data_in     => ics52000_physical_mic_data_in,            -- mic_physical.mic_data_in
 			mic_ws_out      => ics52000_physical_mic_ws_out,             --             .mic_ws_out
 			mic_clk_out     => ics52000_physical_clk,                    --             .clk
-			mics_rdy        => ics52000_physical_mics_rdy,               --             .mics_rdy
 			mic_out_channel => ics52000_mic_output_channel,              --   mic_output.channel
 			mic_out_data    => ics52000_mic_output_data,                 --             .data
 			mic_out_error   => ics52000_mic_output_error,                --             .error
@@ -384,6 +416,30 @@ begin
 			scanclkena         => '0',                            --           (terminated)
 			scandata           => '0',                            --           (terminated)
 			configupdate       => '0'                             --           (terminated)
+		);
+
+	bme280_i2c_0 : component FE_CPLD_BME280_I2C_Reader
+		generic map (
+			sdo              => '0',
+			reads_per_second => 16,
+			input_clk        => 50000000
+		)
+		port map (
+			reset_n          => rst_controller_reset_out_reset_ports_inv, --           reset.reset_n
+			sys_clk          => clk_clk,                                  --      clock_sink.clk
+			bme_output_data  => bme280_i2c_0_bme_output_data,             --      bme_output.data
+			bme_output_error => bme280_i2c_0_bme_output_error,            --                .error
+			bme_output_valid => bme280_i2c_0_bme_output_valid,            --                .valid
+			busy_out         => bme280_i2c_0_control_conduit_busy_out,    -- control_conduit.busy_out
+			continuous       => bme280_i2c_0_control_conduit_continuous,  --                .continuous
+			enable           => bme280_i2c_0_control_conduit_enable,      --                .enable
+			i2c_ack_error    => bme280_i2c_0_i2c_interface_i2c_ack_error, --   I2C_Interface.i2c_ack_error
+			i2c_addr         => bme280_i2c_0_i2c_interface_i2c_addr,      --                .i2c_addr
+			i2c_busy         => bme280_i2c_0_i2c_interface_i2c_busy,      --                .i2c_busy
+			i2c_data_rd      => bme280_i2c_0_i2c_interface_i2c_data_rd,   --                .i2c_data_rd
+			i2c_data_wr      => bme280_i2c_0_i2c_interface_i2c_data_wr,   --                .i2c_data_wr
+			i2c_ena          => bme280_i2c_0_i2c_interface_i2c_ena,       --                .i2c_ena
+			i2c_rw           => bme280_i2c_0_i2c_interface_i2c_rw         --                .i2c_rw
 		);
 
 	rst_controller : component altera_reset_controller
