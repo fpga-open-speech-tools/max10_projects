@@ -73,8 +73,8 @@ entity MAX10_system is
 		DIFFIO_B5P : in std_logic;
 		DIFFIO_B9N : in std_logic;
 		DIFFIO_B9P : in std_logic;
-		DIFFIO_B14N : in std_logic;
-		DIFFIO_B14P : in std_logic;
+		DIFFIO_B14N : inout std_logic;
+		DIFFIO_B14P : inout std_logic;
 		DIFFIO_R14P_CLK2P : in std_logic;
 		DIFFIO_R14N_CLK2N : in std_logic;
 		DIFFIO_R16P_CLK3P : in std_logic;
@@ -148,6 +148,29 @@ architecture ppl_type of MAX10_system is
   END component i2c_master;
 
   
+  component FE_NCP5623B is
+    
+    port (
+      sys_clk               : in  std_logic                     := '0';
+      reset_n               : in  std_logic                     := '0';
+      
+      -- Avalon streaming input
+      rgb_input_data        : in std_logic_vector(15 downto 0)  := (others => '0');
+      rgb_input_valid       : in std_logic                      := '0'; 
+      rgb_input_error       : in std_logic_vector(1 downto 0)   := (others => '0');
+     
+      i2c_enable_out        : out std_logic;
+      i2c_address_out       : out std_logic_vector(6 downto 0) := "0111000";
+      i2c_rdwr_out          : out std_logic;
+      i2c_data_write_out    : out std_logic_vector(7 downto 0) := (others => '0');
+      i2c_bsy_in            : in  std_logic;
+      i2c_data_read_in      : in  std_logic_vector(7 downto 0) := (others => '0');
+        
+      i2c_req_out           : out std_logic;
+      i2c_rdy_in            : in  std_logic
+    );
+  end component FE_NCP5623B;
+  
   signal clk50            : std_logic := '0';
   signal mclk_clk         : std_logic := '0';
   signal serial_control   : std_logic := '0';
@@ -190,8 +213,10 @@ architecture ppl_type of MAX10_system is
   
   signal temp : std_logic_vector(511 downto 0) := (others => '0');
   
+  signal rgb_data        : std_logic_vector(15 downto 0)  := (others => '0');  
+  signal rgb_valid       : std_logic                      := '0'; 
+  signal rgb_error       : std_logic_vector(1 downto 0)   := (others => '0');  
   
-    
   type i2c_state is ( idle,load_first_byte,load_second_byte,
                       tx_wait,i2c_busy_wait, init_device,
                       load_r, load_g, load_b); 
@@ -214,7 +239,7 @@ u0 : component soc_system
 
 i2c_component : i2c_master 
  port map(
-   clk       =>  CLOCK,
+   clk       => CLOCK,
    reset_n   => RESET_N,
    ena       => i2c_enable,
    addr      => i2c_address,
@@ -223,10 +248,30 @@ i2c_component : i2c_master
    busy      => i2c_bsy,
    data_rd   => i2c_data_read,
    ack_error => i2c_err,
-   sda       => Arduino_IO8,
-   scl       => Arduino_IO11
+   sda       => DIFFIO_B14P,
+   scl       => DIFFIO_B14N
 );  
-        
+
+NCP5623B : FE_NCP5623B
+port map(
+    sys_clk               => CLOCK,
+    reset_n               => RESET_N,
+    
+    -- Avalon streaming input
+    rgb_input_data        => rgb_data,
+    rgb_input_valid       => rgb_valid, 
+    rgb_input_error       => open,
+
+    i2c_enable_out        => i2c_enable,
+    i2c_address_out       => i2c_address,
+    i2c_rdwr_out          => i2c_rdwr,
+    i2c_data_write_out    => i2c_data_write,
+    i2c_bsy_in            => i2c_bsy,
+    i2c_data_read_in      => i2c_data_read,
+      
+    i2c_req_out           => open,
+    i2c_rdy_in            => '1'
+);
 
   -- Process to start the data transmission after X clock cycles
   counter_process: process(CLOCK,RESET_N)
@@ -234,7 +279,7 @@ i2c_component : i2c_master
     if RESET_N = '0' then 
       delay_counter   <= (others => '0');
     elsif rising_edge(CLOCK) then 
-    
+
       -- If the counter reaches the defined value, pulse the transmit data signal and reset the counter
       if delay_counter = delay_value then 
         delay_counter <= (others => '0');
@@ -245,7 +290,7 @@ i2c_component : i2c_master
       end if;
     end if;
   end process;
- 
+
   color_change: process(CLOCK,RESET_N)
   begin
     if RESET_N = '0' then 
@@ -254,147 +299,34 @@ i2c_component : i2c_master
       PWM3_COLOR <= "00100";
     elsif rising_edge(CLOCK) then 
       if i2c_write = '1' then 
-        if PWM1_COLOR = "11111" then 
+        if PWM1_COLOR = "10000" then 
           PWM1_COLOR <= "00000";
         else 
           PWM1_COLOR <= std_logic_vector(unsigned(PWM1_COLOR) + 1);
         end if;
-        if PWM2_COLOR = "11111" then 
+        if PWM2_COLOR = "10000" then 
           PWM2_COLOR <= "00000";
         else 
           PWM2_COLOR <= std_logic_vector(unsigned(PWM2_COLOR) + 1);
         end if;
-        if PWM3_COLOR = "11111" then 
+        if PWM3_COLOR = "10000" then 
           PWM3_COLOR <= "00000";
         else 
           PWM3_COLOR <= std_logic_vector(unsigned(PWM3_COLOR) + 1);
         end if;
-        
-        -- PWM1_COLOR <= (others => '0');
-        -- PWM3_COLOR <= (others => '0');
+        rgb_data <= "0" & PWM1_COLOR & PWM2_COLOR & PWM3_COLOR;
+        rgb_valid <= '1';
+      else
+        rgb_data <= rgb_data;
+        rgb_valid <= '0';
       end if;
-  
-    end if;
-  end process;
-  
-  i2c_transition_process: process(CLOCK,RESET_N)
-  begin
-    if RESET_N = '0' then 
-      cur_i2c_state <= idle;
-    elsif rising_edge(CLOCK) then 
-      case cur_i2c_state is
       
-        when init_device =>
-          cur_i2c_state <= i2c_busy_wait;
-          
-        when idle => 
-          if i2c_write = '1' then 
-            cur_i2c_state <= load_r;
-          end if;
-          
-        when load_r =>
-            cur_i2c_state <= load_first_byte;
-        
-        when load_g =>
-            cur_i2c_state <= load_first_byte;
-          
-        when load_b =>
-            cur_i2c_state <= load_first_byte;
-            
-        when load_first_byte =>
-          cur_i2c_state <= i2c_busy_wait;
-          
-        when i2c_busy_wait =>
-          if i2c_bsy = '1' and write_two = '1' and second_byte_loaded = '0' then 
-            cur_i2c_state <= load_second_byte;
-          elsif i2c_bsy = '1' then 
-            cur_i2c_state <= tx_wait;
-          else
-            cur_i2c_state <= i2c_busy_wait;
-          end if;
-          
-        when load_second_byte =>
-          cur_i2c_state <= tx_wait;
-          
-        when tx_wait =>
-          if i2c_bsy = '0' and write_two = '0' then 
-            second_byte_loaded <= '0';
-            cur_i2c_state <= idle;
-          elsif i2c_bsy = '0' and second_byte_loaded = '0' then 
-            cur_i2c_state <= i2c_busy_wait;
-            second_byte_loaded <= '1';
-          elsif i2c_bsy = '0' and second_byte_loaded = '1' then 
-            cur_i2c_state <= next_i2c_state;
-            --cur_i2c_state <= i2c_hold;
-            second_byte_loaded <= '0';
-          else 
-            cur_i2c_state <= tx_wait;
-          end if;
-          
-        when others =>
-        
-      end case;
-  
-    end if;
-  end process;
-  
-  i2c_logic_process: process(CLOCK,RESET_N)
-  begin
-    if rising_edge(CLOCK) then 
-      case cur_i2c_state is
       
-        when init_device =>
-          i2c_rdwr <= '0';
-          i2c_enable <= '1';
-          i2c_data_write <= ILED_OUTPUT & MAX_OUTPUT;
-          second_byte <= ILED_OUTPUT & "11111";
-          write_two <= '1';
-                  
-        when idle => 
-          i2c_enable <= '0';
-          
-        when load_r =>
-          first_byte <= PWM1 & "11111";
-          second_byte <= ILED_OUTPUT & "11111";
-          next_i2c_state <= load_g;
-        
-        when load_g =>
-          first_byte <= PWM2 & "11111";
-          second_byte <= ILED_OUTPUT & "11111";
-          next_i2c_state <= load_b;
-          
-        when load_b =>
-          first_byte <= PWM3 & "11111";
-          second_byte <= ILED_OUTPUT & "11111";
-          next_i2c_state <= idle;
-                      
-        when load_first_byte =>
-          i2c_rdwr <= '0';
-          i2c_data_write <= first_byte;
-          i2c_enable <= '1';
-          write_two <= '1';
-          
-        when load_second_byte =>
-          i2c_data_write <= second_byte;
-          
-        when i2c_busy_wait =>
-                  
-        when tx_wait =>
-          if second_byte_loaded = '1' then 
-            i2c_enable <= '0';
-          elsif write_two = '0' then 
-            i2c_enable <= '0';
-          else
-            i2c_enable <= '1';
-          end if;
-                
-        when others =>
-        
-        end case;
-  
+      PWM1_COLOR <= "11111";
+      PWM2_COLOR <= "00000";
+      PWM3_COLOR <= "00000";
     end if;
   end process;
-  
     
 end;
 

@@ -97,7 +97,7 @@ end component cx_system;
 component i2c_master IS
   GENERIC(
     input_clk : INTEGER := 50_000_000; --input clock speed from user logic in Hz
-    bus_clk   : INTEGER := 10_000);   --speed the i2c bus (scl) will run at in Hz
+    bus_clk   : INTEGER := 100_000);   --speed the i2c bus (scl) will run at in Hz
   PORT(
     clk       : IN     STD_LOGIC;                    --system clock
     reset_n   : IN     STD_LOGIC;                    --active low reset
@@ -158,7 +158,7 @@ end component;
   signal delay_counter        : unsigned(31 downto 0) := (others => '0');
   signal delay_value          : unsigned(31 downto 0) := x"02FAF080";
         
-  signal MAX_OUTPUT           : std_logic_vector(4 downto 0) := "11111";
+  signal MAX_OUTPUT           : std_logic_vector(4 downto 0) := "01111";
         
   signal ILED_OUTPUT          : std_logic_vector(2 downto 0) := "001";
   signal PWM1                 : std_logic_vector(2 downto 0) := "010";
@@ -350,12 +350,12 @@ i2c_component : i2c_master
 );  
 
   -- Process to start the data transmission after X clock cycles
-  counter_process: process(CLK_50,RESET_N)
+  counter_process: process(CLOCK,RESET_N)
   begin
     if RESET_N = '0' then 
       delay_counter   <= (others => '0');
-    elsif rising_edge(CLK_50) then 
-    
+    elsif rising_edge(CLOCK) then 
+
       -- If the counter reaches the defined value, pulse the transmit data signal and reset the counter
       if delay_counter = delay_value then 
         delay_counter <= (others => '0');
@@ -366,66 +366,62 @@ i2c_component : i2c_master
       end if;
     end if;
   end process;
- 
-  color_change: process(CLK_50,RESET_N)
+
+  color_change: process(CLOCK,RESET_N)
   begin
     if RESET_N = '0' then 
       PWM1_COLOR <= "00000";
       PWM2_COLOR <= "00010";
       PWM3_COLOR <= "00100";
-    elsif rising_edge(CLK_50) then 
+    elsif rising_edge(CLOCK) then 
       if i2c_write = '1' then 
-        if PWM1_COLOR = "11111" then 
+        if PWM1_COLOR = "10000" then 
           PWM1_COLOR <= "00000";
         else 
           PWM1_COLOR <= std_logic_vector(unsigned(PWM1_COLOR) + 1);
         end if;
-        if PWM2_COLOR = "11111" then 
+        if PWM2_COLOR = "10000" then 
           PWM2_COLOR <= "00000";
         else 
           PWM2_COLOR <= std_logic_vector(unsigned(PWM2_COLOR) + 1);
         end if;
-        if PWM3_COLOR = "11111" then 
+        if PWM3_COLOR = "10000" then 
           PWM3_COLOR <= "00000";
         else 
           PWM3_COLOR <= std_logic_vector(unsigned(PWM3_COLOR) + 1);
         end if;
-        
-        -- PWM1_COLOR <= (others => '0');
-        -- PWM2_COLOR <= (others => '0');
-        -- PWM3_COLOR <= (others => '0');
       end if;
-  
+
     end if;
   end process;
-  
-  i2c_transition_process: process(CLK_50,RESET_N)
+
+  i2c_transition_process: process(CLOCK,RESET_N)
   begin
     if RESET_N = '0' then 
       cur_i2c_state <= idle;
-    elsif rising_edge(CLK_50) then 
+    elsif rising_edge(CLOCK) then 
       case cur_i2c_state is
-      
+
         when init_device =>
           cur_i2c_state <= i2c_busy_wait;
-          
+
         when idle => 
           if i2c_write = '1' then 
             cur_i2c_state <= load_r;
           end if;
-          
+
         when load_r =>
             cur_i2c_state <= load_first_byte;
-        
+
         when load_g =>
             cur_i2c_state <= load_first_byte;
-          
+
         when load_b =>
             cur_i2c_state <= load_first_byte;
-            
+
         when load_first_byte =>
           cur_i2c_state <= i2c_busy_wait;
-          
+
         when i2c_busy_wait =>
           if i2c_bsy = '1' and write_two = '1' and second_byte_loaded = '0' then 
             cur_i2c_state <= load_second_byte;
@@ -434,14 +430,14 @@ i2c_component : i2c_master
           else
             cur_i2c_state <= i2c_busy_wait;
           end if;
-          
+
         when load_second_byte =>
           cur_i2c_state <= tx_wait;
-          
+
         when tx_wait =>
           if i2c_bsy = '0' and write_two = '0' then 
             second_byte_loaded <= '0';
-            cur_i2c_state <= next_i2c_state;
+            cur_i2c_state <= idle;
           elsif i2c_bsy = '0' and second_byte_loaded = '0' then 
             cur_i2c_state <= i2c_busy_wait;
             second_byte_loaded <= '1';
@@ -452,55 +448,55 @@ i2c_component : i2c_master
           else 
             cur_i2c_state <= tx_wait;
           end if;
-          
+
         when others =>
-        
+
       end case;
-  
+
     end if;
   end process;
-  
-  i2c_logic_process: process(CLK_50,RESET_N)
+
+  i2c_logic_process: process(CLOCK,RESET_N)
   begin
-    if rising_edge(CLK_50) then 
+    if rising_edge(CLOCK) then 
       case cur_i2c_state is
-      
+
         when init_device =>
           i2c_rdwr <= '0';
           i2c_enable <= '1';
           i2c_data_write <= ILED_OUTPUT & MAX_OUTPUT;
           second_byte <= ILED_OUTPUT & "11111";
           write_two <= '0';
-                  
+
         when idle => 
           i2c_enable <= '0';
-          
+
         when load_r =>
-          first_byte <= PWM1 & "00000";
-          second_byte <= ILED_OUTPUT & "00111";
+          first_byte <= PWM1 & PWM1_COLOR;
+          second_byte <= PWM1 & "11111";
           next_i2c_state <= load_g;
-        
+
         when load_g =>
-          first_byte <= PWM2 & "00000";
-          second_byte <= ILED_OUTPUT & "00111";
+          first_byte <= PWM2 & PWM2_COLOR;
+          second_byte <= PWM2 & "11111";
           next_i2c_state <= load_b;
-          
+
         when load_b =>
-          first_byte <= PWM3 & MAX_OUTPUT;
-          second_byte <= ILED_OUTPUT & "00111";
+          first_byte <= PWM3 & PWM3_COLOR;
+          second_byte <= PWM3 & "11111";
           next_i2c_state <= idle;
-                      
+
         when load_first_byte =>
           i2c_rdwr <= '0';
           i2c_data_write <= first_byte;
           i2c_enable <= '1';
-          write_two <= '0';
-          
+          write_two <= '1';
+
         when load_second_byte =>
           i2c_data_write <= second_byte;
-          
+
         when i2c_busy_wait =>
-                  
+
         when tx_wait =>
           if second_byte_loaded = '1' then 
             i2c_enable <= '0';
@@ -509,11 +505,11 @@ i2c_component : i2c_master
           else
             i2c_enable <= '1';
           end if;
-                
+
         when others =>
-        
+
         end case;
-  
+
     end if;
   end process;
   
