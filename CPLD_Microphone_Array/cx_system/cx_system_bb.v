@@ -1,6 +1,16 @@
 
 module cx_system (
 	altpll_0_locked_conduit_export,
+	bme280_i2c_0_control_conduit_busy_out,
+	bme280_i2c_0_control_conduit_continuous,
+	bme280_i2c_0_control_conduit_enable,
+	bme280_i2c_0_i2c_interface_i2c_ack_error,
+	bme280_i2c_0_i2c_interface_i2c_addr,
+	bme280_i2c_0_i2c_interface_i2c_busy,
+	bme280_i2c_0_i2c_interface_i2c_data_rd,
+	bme280_i2c_0_i2c_interface_i2c_data_wr,
+	bme280_i2c_0_i2c_interface_i2c_ena,
+	bme280_i2c_0_i2c_interface_i2c_rw,
 	bme_output_data,
 	bme_output_error,
 	bme_output_valid,
@@ -28,6 +38,7 @@ module cx_system (
 	ics52000_physical_mic_data_in,
 	ics52000_physical_mic_ws_out,
 	ics52000_physical_clk,
+	ics52000_physical_mics_rdy,
 	led_output_led_sd,
 	led_output_led_ws,
 	mic_input_data,
@@ -49,18 +60,29 @@ module cx_system (
 	rj45_interface_serial_data_in,
 	rj45_interface_serial_data_out,
 	serial_clk_clk,
-	bme280_i2c_0_control_conduit_busy_out,
-	bme280_i2c_0_control_conduit_continuous,
-	bme280_i2c_0_control_conduit_enable,
-	bme280_i2c_0_i2c_interface_i2c_ack_error,
-	bme280_i2c_0_i2c_interface_i2c_addr,
-	bme280_i2c_0_i2c_interface_i2c_busy,
-	bme280_i2c_0_i2c_interface_i2c_data_rd,
-	bme280_i2c_0_i2c_interface_i2c_data_wr,
-	bme280_i2c_0_i2c_interface_i2c_ena,
-	bme280_i2c_0_i2c_interface_writeresponsevalid_n);	
+	ncp5623b_rgb_input_data,
+	ncp5623b_rgb_input_error,
+	ncp5623b_rgb_input_valid,
+	ncp5623b_i2c_conduit_i2c_enable_out,
+	ncp5623b_i2c_conduit_i2c_address_out,
+	ncp5623b_i2c_conduit_i2c_rdwr_out,
+	ncp5623b_i2c_conduit_i2c_data_write_out,
+	ncp5623b_i2c_conduit_i2c_bsy_in,
+	ncp5623b_i2c_conduit_i2c_data_read_in,
+	ncp5623b_i2c_conduit_i2c_req_out,
+	ncp5623b_i2c_conduit_i2c_rdy_in);	
 
 	output		altpll_0_locked_conduit_export;
+	output		bme280_i2c_0_control_conduit_busy_out;
+	input		bme280_i2c_0_control_conduit_continuous;
+	input		bme280_i2c_0_control_conduit_enable;
+	input		bme280_i2c_0_i2c_interface_i2c_ack_error;
+	output	[6:0]	bme280_i2c_0_i2c_interface_i2c_addr;
+	input		bme280_i2c_0_i2c_interface_i2c_busy;
+	input	[7:0]	bme280_i2c_0_i2c_interface_i2c_data_rd;
+	output	[7:0]	bme280_i2c_0_i2c_interface_i2c_data_wr;
+	output		bme280_i2c_0_i2c_interface_i2c_ena;
+	output		bme280_i2c_0_i2c_interface_i2c_rw;
 	output	[63:0]	bme_output_data;
 	output	[1:0]	bme_output_error;
 	output		bme_output_valid;
@@ -88,6 +110,7 @@ module cx_system (
 	input	[15:0]	ics52000_physical_mic_data_in;
 	output	[15:0]	ics52000_physical_mic_ws_out;
 	output	[3:0]	ics52000_physical_clk;
+	output		ics52000_physical_mics_rdy;
 	output		led_output_led_sd;
 	output		led_output_led_ws;
 	input	[31:0]	mic_input_data;
@@ -109,14 +132,15 @@ module cx_system (
 	input		rj45_interface_serial_data_in;
 	output		rj45_interface_serial_data_out;
 	input		serial_clk_clk;
-	output		bme280_i2c_0_control_conduit_busy_out;
-	input		bme280_i2c_0_control_conduit_continuous;
-	input		bme280_i2c_0_control_conduit_enable;
-	input		bme280_i2c_0_i2c_interface_i2c_ack_error;
-	output	[6:0]	bme280_i2c_0_i2c_interface_i2c_addr;
-	input		bme280_i2c_0_i2c_interface_i2c_busy;
-	input	[7:0]	bme280_i2c_0_i2c_interface_i2c_data_rd;
-	output	[7:0]	bme280_i2c_0_i2c_interface_i2c_data_wr;
-	output		bme280_i2c_0_i2c_interface_i2c_ena;
-	output		bme280_i2c_0_i2c_interface_writeresponsevalid_n;
+	input	[15:0]	ncp5623b_rgb_input_data;
+	input	[1:0]	ncp5623b_rgb_input_error;
+	input		ncp5623b_rgb_input_valid;
+	output		ncp5623b_i2c_conduit_i2c_enable_out;
+	output	[6:0]	ncp5623b_i2c_conduit_i2c_address_out;
+	output		ncp5623b_i2c_conduit_i2c_rdwr_out;
+	output	[7:0]	ncp5623b_i2c_conduit_i2c_data_write_out;
+	input		ncp5623b_i2c_conduit_i2c_bsy_in;
+	input	[7:0]	ncp5623b_i2c_conduit_i2c_data_read_in;
+	output		ncp5623b_i2c_conduit_i2c_req_out;
+	input		ncp5623b_i2c_conduit_i2c_rdy_in;
 endmodule

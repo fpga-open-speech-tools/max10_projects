@@ -90,16 +90,28 @@ component cx_system is
     mic_input_channel                        : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- channel
     mic_input_error                          : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
     mic_input_valid                          : in  std_logic                     := 'X';              -- valid
-	 bme280_i2c_0_control_conduit_busy_out    : out std_logic;                                        -- busy_out
-	 bme280_i2c_0_control_conduit_continuous  : in  std_logic                     := 'X';             -- continuous
-	 bme280_i2c_0_control_conduit_enable      : in  std_logic                     := 'X';             -- enable
-	 bme280_i2c_0_i2c_interface_i2c_ack_error : in  std_logic                     := 'X';             -- i2c_ack_error
-	 bme280_i2c_0_i2c_interface_i2c_addr      : out std_logic_vector(6 downto 0);                     -- i2c_addr
-	 bme280_i2c_0_i2c_interface_i2c_busy      : in  std_logic                     := 'X';             -- i2c_busy
-	 bme280_i2c_0_i2c_interface_i2c_data_rd   : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_rd
-	 bme280_i2c_0_i2c_interface_i2c_data_wr   : out std_logic_vector(7 downto 0);                     -- i2c_data_wr
-	 bme280_i2c_0_i2c_interface_i2c_ena       : out std_logic;                                        -- i2c_ena
-	 bme280_i2c_0_i2c_interface_i2c_rw        : out std_logic                                        -- i2c_rw
+	  bme280_i2c_0_control_conduit_busy_out    : out std_logic;                                        -- busy_out
+	  bme280_i2c_0_control_conduit_continuous  : in  std_logic                     := 'X';             -- continuous
+	  bme280_i2c_0_control_conduit_enable      : in  std_logic                     := 'X';             -- enable
+	  bme280_i2c_0_i2c_interface_i2c_ack_error : in  std_logic                     := 'X';             -- i2c_ack_error
+	  bme280_i2c_0_i2c_interface_i2c_addr      : out std_logic_vector(6 downto 0);                     -- i2c_addr
+	  bme280_i2c_0_i2c_interface_i2c_busy      : in  std_logic                     := 'X';             -- i2c_busy
+	  bme280_i2c_0_i2c_interface_i2c_data_rd   : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_rd
+	  bme280_i2c_0_i2c_interface_i2c_data_wr   : out std_logic_vector(7 downto 0);                     -- i2c_data_wr
+	  bme280_i2c_0_i2c_interface_i2c_ena       : out std_logic;                                        -- i2c_ena
+	  bme280_i2c_0_i2c_interface_i2c_rw        : out std_logic;                                       -- i2c_rw
+    ncp5623b_rgb_input_data                  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+    ncp5623b_rgb_input_error                 : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+    ncp5623b_rgb_input_valid                 : in  std_logic                     := 'X';             -- valid
+    ncp5623b_i2c_conduit_i2c_enable_out      : out std_logic;                                        -- i2c_enable_out
+    ncp5623b_i2c_conduit_i2c_address_out     : out std_logic_vector(6 downto 0);                     -- i2c_address_out
+    ncp5623b_i2c_conduit_i2c_rdwr_out        : out std_logic;                                        -- i2c_rdwr_out
+    ncp5623b_i2c_conduit_i2c_data_write_out  : out std_logic_vector(7 downto 0);                     -- i2c_data_write_out
+    ncp5623b_i2c_conduit_i2c_bsy_in          : in  std_logic                     := 'X';             -- i2c_bsy_in
+    ncp5623b_i2c_conduit_i2c_data_read_in    : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_read_in
+    ncp5623b_i2c_conduit_i2c_req_out         : out std_logic;                                        -- i2c_req_out
+    ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := 'X'              -- i2c_rdy_in
+
   );
 end component cx_system;
   
@@ -185,6 +197,9 @@ END component i2c_master;
   signal i2c_data_read        : std_logic_vector(7 downto 0) := (others => '0');
   signal i2c_data_clk         : std_logic;
   signal i2c_err              : std_logic;
+  
+  signal rgb_req              : std_logic;
+  signal rgb_en               : std_logic;
           
   signal delay_counter        : unsigned(31 downto 0) := (others => '0');
   signal delay_value          : unsigned(31 downto 0) := x"02FAF080";
@@ -256,9 +271,9 @@ END component i2c_master;
   signal bme_continuous : std_logic := '1';
   signal bme_busy       : std_logic := '1';
   
-  signal i2c_control : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
-  signal bme_i2c : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
-  signal rgb_i2c : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
+  signal i2c_control : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'), data_rd => (others => '0'), busy => '0');
+  signal bme_i2c : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'), data_rd => (others => '0'), busy => '0');
+  signal rgb_i2c : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'), data_rd => (others => '0'), busy => '0');
   
 begin
 
@@ -304,17 +319,27 @@ pd : cx_system
     mic_input_channel                   => ics52000_mic_channel(4 downto 0),                   --                        .channel
     mic_input_error                     => ics52000_mic_error,                     --                        .error
     mic_input_valid                     => ics52000_mic_valid,                      --                        .valid
-	 bme280_i2c_0_control_conduit_busy_out    => bme_busy,    -- bme280_i2c_0_control_conduit.busy_out
-	 bme280_i2c_0_control_conduit_continuous  => bme_continuous,  --                             .continuous
-	 bme280_i2c_0_control_conduit_enable      => bme_enable,      --                             .enable
-	 bme280_i2c_0_i2c_interface_i2c_ack_error => i2c_err, --   bme280_i2c_0_i2c_interface.i2c_ack_error
-	 bme280_i2c_0_i2c_interface_i2c_addr      => bme_i2c.addr,      --                             .i2c_addr
-	 bme280_i2c_0_i2c_interface_i2c_busy      => i2c_bsy,      --                             .i2c_busy
-	 bme280_i2c_0_i2c_interface_i2c_data_rd   => i2c_data_read,   --                             .i2c_data_rd
-	 bme280_i2c_0_i2c_interface_i2c_data_wr   => bme_i2c.data_wr,   --                             .i2c_data_wr
-	 bme280_i2c_0_i2c_interface_i2c_ena       => bme_i2c.ena,       --                             .i2c_ena
-	 bme280_i2c_0_i2c_interface_i2c_rw        => bme_i2c.rw        --                             .i2c_rw
-	 
+	  bme280_i2c_0_control_conduit_busy_out    => bme_busy,    -- bme280_i2c_0_control_conduit.busy_out
+	  bme280_i2c_0_control_conduit_continuous  => bme_continuous,  --                             .continuous
+	  bme280_i2c_0_control_conduit_enable      => bme_enable,      --                             .enable
+	  bme280_i2c_0_i2c_interface_i2c_ack_error => i2c_err, --   bme280_i2c_0_i2c_interface.i2c_ack_error
+	  bme280_i2c_0_i2c_interface_i2c_addr      => bme_i2c.addr,      --                             .i2c_addr
+	  bme280_i2c_0_i2c_interface_i2c_busy      => bme_i2c.busy,      --                             .i2c_busy
+	  bme280_i2c_0_i2c_interface_i2c_data_rd   => bme_i2c.data_rd,   --                             .i2c_data_rd
+	  bme280_i2c_0_i2c_interface_i2c_data_wr   => bme_i2c.data_wr,   --                             .i2c_data_wr
+	  bme280_i2c_0_i2c_interface_i2c_ena       => bme_i2c.ena,       --                             .i2c_ena
+	  bme280_i2c_0_i2c_interface_i2c_rw        => bme_i2c.rw,       --                             .i2c_rw
+    ncp5623b_rgb_input_data                  => rgb_data,                  --           ncp5623b_rgb_input.data
+    ncp5623b_rgb_input_error                 => rgb_error,                 --                             .error
+    ncp5623b_rgb_input_valid                 => rgb_valid,                 --                             .valid
+    ncp5623b_i2c_conduit_i2c_enable_out      => rgb_i2c.ena,      --         ncp5623b_i2c_conduit.i2c_enable_out
+    ncp5623b_i2c_conduit_i2c_address_out     => rgb_i2c.addr,     --                             .i2c_address_out
+    ncp5623b_i2c_conduit_i2c_rdwr_out        => rgb_i2c.rw,        --                             .i2c_rdwr_out
+    ncp5623b_i2c_conduit_i2c_data_write_out  => rgb_i2c.data_wr,  --                             .i2c_data_write_out
+    ncp5623b_i2c_conduit_i2c_bsy_in          => rgb_i2c.busy,          --                             .i2c_bsy_in
+    ncp5623b_i2c_conduit_i2c_data_read_in    => rgb_i2c.data_rd,    --                             .i2c_data_read_in
+    ncp5623b_i2c_conduit_i2c_req_out         => rgb_req,         --                             .i2c_req_out
+    ncp5623b_i2c_conduit_i2c_rdy_in          => rgb_en           --                             .i2c_rdy_in
   );
 
 cfg_counter:  FE_Streaming_Counter
@@ -373,41 +398,22 @@ i2c_component : i2c_master
    addr      => i2c_control.addr,
    rw        => i2c_control.rw,
    data_wr   => i2c_control.data_wr,
-   busy      => i2c_bsy,
-   data_rd   => i2c_data_read,
+   busy      => i2c_control.busy,
+   data_rd   => i2c_control.data_rd,
    ack_error => i2c_err,
    sda       => I2C_SDA,
    scl       => I2C_SCL
 );  
-
-NCP5623B : FE_NCP5623B
-port map(
-    sys_clk               => CLK_50,
-    reset_n               => RESET_N,
-    
-    -- Avalon streaming input
-    rgb_input_data        => rgb_data,
-    rgb_input_valid       => rgb_valid, 
-    rgb_input_error       => open,
-
-    i2c_enable_out        => i2c_enable,
-    i2c_address_out       => i2c_address,
-    i2c_rdwr_out          => i2c_rdwr,
-    i2c_data_write_out    => i2c_data_write,
-    i2c_bsy_in            => i2c_bsy,
-    i2c_data_read_in      => i2c_data_read,
-      
-    i2c_req_out           => open,
-    i2c_rdy_in            => '1'
-);
 
   i2c_control_p : process(CLK_50)
   begin
 	if rising_edge(CLK_50) then
 	  if bme_busy = '1' then
 	  	i2c_control <= bme_i2c;
+      rgb_en <= '0';
 	  else 
 	  	i2c_control <= rgb_i2c;
+      rgb_en <= '1';
 	  end if;
 	end if;
   end process;
@@ -480,12 +486,6 @@ mic_data_in <= MICROPHONE_SDI;
 
 -- Map the microphone word select lines
 MICROPHONE_WS  <= mic_ws_out;
-
--- Map the RGB I2C signals  
-rgb_i2c.addr    <= i2c_address;
-rgb_i2c.ena     <= i2c_enable;
-rgb_i2c.rw      <= i2c_rdwr;
-rgb_i2c.data_wr <= i2c_data_write;
  
 end;
 

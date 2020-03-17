@@ -57,6 +57,17 @@ entity cx_system is
 		mic_output_data                          : out std_logic_vector(31 downto 0);                    --                             .data
 		mic_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
 		mic_output_valid                         : out std_logic;                                        --                             .valid
+		ncp5623b_i2c_conduit_i2c_enable_out      : out std_logic;                                        --         ncp5623b_i2c_conduit.i2c_enable_out
+		ncp5623b_i2c_conduit_i2c_address_out     : out std_logic_vector(6 downto 0);                     --                             .i2c_address_out
+		ncp5623b_i2c_conduit_i2c_rdwr_out        : out std_logic;                                        --                             .i2c_rdwr_out
+		ncp5623b_i2c_conduit_i2c_data_write_out  : out std_logic_vector(7 downto 0);                     --                             .i2c_data_write_out
+		ncp5623b_i2c_conduit_i2c_bsy_in          : in  std_logic                     := '0';             --                             .i2c_bsy_in
+		ncp5623b_i2c_conduit_i2c_data_read_in    : in  std_logic_vector(7 downto 0)  := (others => '0'); --                             .i2c_data_read_in
+		ncp5623b_i2c_conduit_i2c_req_out         : out std_logic;                                        --                             .i2c_req_out
+		ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := '0';             --                             .i2c_rdy_in
+		ncp5623b_rgb_input_data                  : in  std_logic_vector(15 downto 0) := (others => '0'); --           ncp5623b_rgb_input.data
+		ncp5623b_rgb_input_error                 : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
+		ncp5623b_rgb_input_valid                 : in  std_logic                     := '0';             --                             .valid
 		pll_mclk_clk                             : out std_logic;                                        --                     pll_mclk.clk
 		reset_reset_n                            : in  std_logic                     := '0';             --                        reset.reset_n
 		rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => '0'); --                    rgb_input.data
@@ -168,6 +179,24 @@ architecture rtl of cx_system is
 			mic_out_valid   : out std_logic                                         -- valid
 		);
 	end component FE_ICS52000;
+
+	component FE_NCP5623B is
+		port (
+			reset_n            : in  std_logic                     := 'X';             -- reset_n
+			rgb_input_data     : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			rgb_input_error    : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			rgb_input_valid    : in  std_logic                     := 'X';             -- valid
+			sys_clk            : in  std_logic                     := 'X';             -- clk
+			i2c_enable_out     : out std_logic;                                        -- i2c_enable_out
+			i2c_address_out    : out std_logic_vector(6 downto 0);                     -- i2c_address_out
+			i2c_rdwr_out       : out std_logic;                                        -- i2c_rdwr_out
+			i2c_data_write_out : out std_logic_vector(7 downto 0);                     -- i2c_data_write_out
+			i2c_bsy_in         : in  std_logic                     := 'X';             -- i2c_bsy_in
+			i2c_data_read_in   : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_read_in
+			i2c_req_out        : out std_logic;                                        -- i2c_req_out
+			i2c_rdy_in         : in  std_logic                     := 'X'              -- i2c_rdy_in
+		);
+	end component FE_NCP5623B;
 
 	component cx_system_altpll_0 is
 		port (
@@ -295,7 +324,7 @@ architecture rtl of cx_system is
 	signal altpll_0_c1_clk                          : std_logic;                     -- altpll_0:c1 -> FE_ICS52000_0:mic_clk_in
 	signal rst_controller_reset_out_reset           : std_logic;                     -- rst_controller:reset_out -> [altpll_0:reset, rst_controller_reset_out_reset:in]
 	signal reset_reset_n_ports_inv                  : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
-	signal rst_controller_reset_out_reset_ports_inv : std_logic;                     -- rst_controller_reset_out_reset:inv -> [FE_CPLD_Microphone_Encoder_Decoder_0:reset_n, FE_FPGA_Microphone_Encoder_Decoder_0:reset_n, FE_ICS52000_0:reset_n, bme280_i2c_0:reset_n]
+	signal rst_controller_reset_out_reset_ports_inv : std_logic;                     -- rst_controller_reset_out_reset:inv -> [FE_CPLD_Microphone_Encoder_Decoder_0:reset_n, FE_FPGA_Microphone_Encoder_Decoder_0:reset_n, FE_ICS52000_0:reset_n, FE_NCP5623B_0:reset_n, bme280_i2c_0:reset_n]
 
 begin
 
@@ -391,6 +420,23 @@ begin
 			mic_out_data    => ics52000_mic_output_data,                 --             .data
 			mic_out_error   => ics52000_mic_output_error,                --             .error
 			mic_out_valid   => ics52000_mic_output_valid                 --             .valid
+		);
+
+	fe_ncp5623b_0 : component FE_NCP5623B
+		port map (
+			reset_n            => rst_controller_reset_out_reset_ports_inv, --                 reset.reset_n
+			rgb_input_data     => ncp5623b_rgb_input_data,                  --             rgb_input.data
+			rgb_input_error    => ncp5623b_rgb_input_error,                 --                      .error
+			rgb_input_valid    => ncp5623b_rgb_input_valid,                 --                      .valid
+			sys_clk            => clk_clk,                                  --               sys_clk.clk
+			i2c_enable_out     => ncp5623b_i2c_conduit_i2c_enable_out,      -- i2c_component_conduit.i2c_enable_out
+			i2c_address_out    => ncp5623b_i2c_conduit_i2c_address_out,     --                      .i2c_address_out
+			i2c_rdwr_out       => ncp5623b_i2c_conduit_i2c_rdwr_out,        --                      .i2c_rdwr_out
+			i2c_data_write_out => ncp5623b_i2c_conduit_i2c_data_write_out,  --                      .i2c_data_write_out
+			i2c_bsy_in         => ncp5623b_i2c_conduit_i2c_bsy_in,          --                      .i2c_bsy_in
+			i2c_data_read_in   => ncp5623b_i2c_conduit_i2c_data_read_in,    --                      .i2c_data_read_in
+			i2c_req_out        => ncp5623b_i2c_conduit_i2c_req_out,         --                      .i2c_req_out
+			i2c_rdy_in         => ncp5623b_i2c_conduit_i2c_rdy_in           --                      .i2c_rdy_in
 		);
 
 	altpll_0 : component cx_system_altpll_0

@@ -2,7 +2,7 @@ set_global_assignment -entity "cx_system" -library "cx_system" -name IP_TOOL_NAM
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_TOOL_VERSION "18.0"
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "cx_system" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../cx_system.sopcinfo"]
-set_global_assignment -entity "cx_system" -library "cx_system" -name SLD_INFO "QSYS_NAME cx_system HAS_SOPCINFO 1 GENERATION_ID 1584472638"
+set_global_assignment -entity "cx_system" -library "cx_system" -name SLD_INFO "QSYS_NAME cx_system HAS_SOPCINFO 1 GENERATION_ID 1584475186"
 set_global_assignment -library "cx_system" -name MISC_FILE [file join $::quartus(qip_path) "../cx_system.cmp"]
 set_global_assignment -library "cx_system" -name SLD_FILE [file join $::quartus(qip_path) "cx_system.debuginfo"]
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_TARGETED_DEVICE_FAMILY "MAX 10"
@@ -15,7 +15,7 @@ set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONEN
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTU4NDQ3MjYzOA==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTU4NDQ3NTE4Ng==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::TUFYIDEw::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::MTBNMDhTQUUxNDRDOEdFUw==::QXV0byBERVZJQ0U="
 set_global_assignment -entity "cx_system" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::OA==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
@@ -148,6 +148,11 @@ set_global_assignment -entity "cx_system_altpll_0" -library "cx_system" -name IP
 set_global_assignment -entity "cx_system_altpll_0" -library "cx_system" -name IP_COMPONENT_PARAMETER "SElEREVOX0lTX0ZJUlNUX0VESVQ=::MA==::SElEREVOX0lTX0ZJUlNUX0VESVQ="
 set_global_assignment -entity "cx_system_altpll_0" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::TUFYIDEw::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "cx_system_altpll_0" -library "cx_system" -name IP_COMPONENT_PARAMETER "QVVUT19JTkNMS19JTlRFUkZBQ0VfQ0xPQ0tfUkFURQ==::NTAwMDAwMDA=::QXV0byBDTE9DS19SQVRF"
+set_global_assignment -entity "FE_NCP5623B" -library "cx_system" -name IP_COMPONENT_NAME "RkVfTkNQNTYyM0I="
+set_global_assignment -entity "FE_NCP5623B" -library "cx_system" -name IP_COMPONENT_DISPLAY_NAME "RkVfTkNQNTYyM0I="
+set_global_assignment -entity "FE_NCP5623B" -library "cx_system" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "FE_NCP5623B" -library "cx_system" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "FE_NCP5623B" -library "cx_system" -name IP_COMPONENT_VERSION "MS4w"
 set_global_assignment -entity "FE_ICS52000" -library "cx_system" -name IP_COMPONENT_NAME "RkVfSUNTNTIwMDA="
 set_global_assignment -entity "FE_ICS52000" -library "cx_system" -name IP_COMPONENT_DISPLAY_NAME "RkVfSUNTNTIwMDA="
 set_global_assignment -entity "FE_ICS52000" -library "cx_system" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
@@ -193,6 +198,7 @@ set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus
 set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/FE_BME280_Compensate_Data.vhd"]
 set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/i2c_pkg.vhd"]
 set_global_assignment -library "cx_system" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/cx_system_altpll_0.v"]
+set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/FE_NCP5623B_v1.vhd"]
 set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/FE_ICS52000_v1.vhd"]
 set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/mic_array_startup.vhd"]
 set_global_assignment -library "cx_system" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/FE_FPGA_Microphone_Encoder_Decoder.vhd"]
