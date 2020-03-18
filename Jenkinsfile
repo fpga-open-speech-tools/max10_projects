@@ -17,7 +17,7 @@ pipeline {
                 stage('BME280') {
                     when { changeset "CPLD_BME280_I2C/*"}
                     steps {
-                        build job: 'Q18P0_MAX10_BME280', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME)]
+                        build job: 'Q18P0_MAX10_BME280', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME), string(name: 'PROJECT', value: 'CPLD_BME280_I2C'), string(name: 'DIRECTORY', value: 'CPLD_BME280_I2C')]
                     }
                 }
                 
