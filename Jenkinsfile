@@ -35,7 +35,6 @@ pipeline {
             // }
             
             steps {
-
                 parallel {
                     stage(BME280) {
                         when { changeset "CPLD_BME280_I2C/*"}
@@ -48,7 +47,6 @@ pipeline {
                     //     build job: 'full-build-windows', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
                     // },
                     }
-                echo 'full build'
             }
         }
         stage ('Build Skipped') {
