@@ -8,6 +8,8 @@ Progress: Adding FE_FPGA_Microphone_Encoder_Decoder_0 [FE_FPGA_Microphone_Encode
 Progress: Parameterizing module FE_FPGA_Microphone_Encoder_Decoder_0
 Progress: Adding FE_ICS52000_0 [FE_ICS52000 1.0]
 Progress: Parameterizing module FE_ICS52000_0
+Progress: Adding FE_NCP5623B_0 [FE_NCP5623B 1.0]
+Progress: Parameterizing module FE_NCP5623B_0
 Progress: Adding altpll_0 [altpll 18.0]
 Progress: Parameterizing module altpll_0
 Progress: Adding bme280_i2c_0 [bme280_i2c 1.0]
@@ -32,6 +34,8 @@ Progress: Adding FE_FPGA_Microphone_Encoder_Decoder_0 [FE_FPGA_Microphone_Encode
 Progress: Parameterizing module FE_FPGA_Microphone_Encoder_Decoder_0
 Progress: Adding FE_ICS52000_0 [FE_ICS52000 1.0]
 Progress: Parameterizing module FE_ICS52000_0
+Progress: Adding FE_NCP5623B_0 [FE_NCP5623B 1.0]
+Progress: Parameterizing module FE_NCP5623B_0
 Progress: Adding altpll_0 [altpll 18.0]
 Progress: Parameterizing module altpll_0
 Progress: Adding bme280_i2c_0 [bme280_i2c 1.0]
@@ -47,9 +51,10 @@ Info: cx_system: Generating cx_system "cx_system" for QUARTUS_SYNTH
 Info: FE_CPLD_Microphone_Encoder_Decoder_0: "cx_system" instantiated FE_CPLD_Microphone_Encoder_Decoder "FE_CPLD_Microphone_Encoder_Decoder_0"
 Info: FE_FPGA_Microphone_Encoder_Decoder_0: "cx_system" instantiated FE_FPGA_Microphone_Encoder_Decoder "FE_FPGA_Microphone_Encoder_Decoder_0"
 Info: FE_ICS52000_0: "cx_system" instantiated FE_ICS52000 "FE_ICS52000_0"
+Info: FE_NCP5623B_0: "cx_system" instantiated FE_NCP5623B "FE_NCP5623B_0"
 Info: altpll_0: "cx_system" instantiated altpll "altpll_0"
 Info: bme280_i2c_0: "cx_system" instantiated bme280_i2c "bme280_i2c_0"
 Info: rst_controller: "cx_system" instantiated altera_reset_controller "rst_controller"
-Info: cx_system: Done "cx_system" with 7 modules, 12 files
+Info: cx_system: Done "cx_system" with 8 modules, 13 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

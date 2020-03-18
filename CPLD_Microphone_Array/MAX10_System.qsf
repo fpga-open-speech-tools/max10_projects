@@ -179,14 +179,20 @@ set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
+
+set_global_assignment -name VHDL_FILE ../../component_library/ICS52000/Source_Files/mic_array_startup.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/ICS52000/Source_Files/FE_ICS52000_v1.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/serdes/Generic_Shift_Container.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/BME280/FE_BME280_v1.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/BME280/FE_BME280_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/NCP5623B/Source_Files/FE_NCP5623B_v1.vhd
 set_global_assignment -name VHDL_FILE ../../component_library/I2C/i2c_pkg.vhd
 set_global_assignment -name QIP_FILE ../../component_library/serdes/Serial2Parallel_32bits.qip
 set_global_assignment -name QIP_FILE ../../component_library/serdes/Parallel2Serial_32bits.qip
-set_global_assignment -name VHDL_FILE ../../component_library/Microphone_Array/mic_array_startup.vhd
-set_global_assignment -name VHDL_FILE ../../component_library/Microphone_Array/FE_ICS52000_v1.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/ICS52000/mic_array_startup.vhd
+set_global_assignment -name VHDL_FILE ../../component_library/ICS52000/FE_ICS52000_v1.vhd
 set_global_assignment -name VHDL_FILE ../../component_library/Microphone_Array/FE_FPGA_Microphone_Encoder_Decoder.vhd
 set_global_assignment -name VHDL_FILE ../../component_library/Microphone_Array/FE_CPLD_Microphone_Encoder_Decoder.vhd
-set_global_assignment -name VHDL_FILE ../../component_library/Microphone_Array/Generic_Shift_Container.vhd
 set_global_assignment -name VHDL_FILE ../../component_library/Streaming_Counter/Source_Files/FE_Streaming_Counter.vhd
 set_global_assignment -name QIP_FILE cx_system/synthesis/cx_system.qip
 set_global_assignment -name VHDL_FILE ../../component_library/I2C/i2c_master.vhd
@@ -198,5 +204,6 @@ set_global_assignment -name VHDL_FILE ../../component_library/Speaker_Array/Sour
 set_global_assignment -name VHDL_FILE MAX10_system.vhd
 set_global_assignment -name QIP_FILE ../../component_library/I2S/Source_Files/I2S_DPR_M9K.qip
 set_global_assignment -name QIP_FILE ../../component_library/Speaker_Array/Source_Files/M9K_Buffer.qip
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name PROJECT_IP_REGENERATION_POLICY ALWAYS_REGENERATE_IP
+
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

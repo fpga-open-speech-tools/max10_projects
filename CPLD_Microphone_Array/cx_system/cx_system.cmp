@@ -38,6 +38,7 @@
 			ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
 			ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    -- mic_ws_out
 			ics52000_physical_clk                    : out std_logic_vector(3 downto 0);                     -- clk
+			ics52000_physical_mics_rdy               : out std_logic;                                        -- mics_rdy
 			led_output_led_sd                        : out std_logic;                                        -- led_sd
 			led_output_led_ws                        : out std_logic;                                        -- led_ws
 			mic_input_data                           : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
@@ -48,6 +49,17 @@
 			mic_output_data                          : out std_logic_vector(31 downto 0);                    -- data
 			mic_output_error                         : out std_logic_vector(1 downto 0);                     -- error
 			mic_output_valid                         : out std_logic;                                        -- valid
+			ncp5623b_i2c_conduit_i2c_enable_out      : out std_logic;                                        -- i2c_enable_out
+			ncp5623b_i2c_conduit_i2c_address_out     : out std_logic_vector(6 downto 0);                     -- i2c_address_out
+			ncp5623b_i2c_conduit_i2c_rdwr_out        : out std_logic;                                        -- i2c_rdwr_out
+			ncp5623b_i2c_conduit_i2c_data_write_out  : out std_logic_vector(7 downto 0);                     -- i2c_data_write_out
+			ncp5623b_i2c_conduit_i2c_bsy_in          : in  std_logic                     := 'X';             -- i2c_bsy_in
+			ncp5623b_i2c_conduit_i2c_data_read_in    : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_read_in
+			ncp5623b_i2c_conduit_i2c_req_out         : out std_logic;                                        -- i2c_req_out
+			ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := 'X';             -- i2c_rdy_in
+			ncp5623b_rgb_input_data                  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			ncp5623b_rgb_input_error                 : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			ncp5623b_rgb_input_valid                 : in  std_logic                     := 'X';             -- valid
 			pll_mclk_clk                             : out std_logic;                                        -- clk
 			reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
 			rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
