@@ -20,6 +20,12 @@ pipeline {
                         build job: 'Q18P0_MAX10_BME280', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME), string(name: 'PROJECT', value: 'CPLD_BME280_I2C'), string(name: 'DIRECTORY', value: 'CPLD_BME280_I2C')]
                     }
                 }
+                stage('Mic_Encoder_Decoder') {
+                    when { changeset "CPLD_Microphone_Array/*"}
+                    steps {
+                        build job: 'Q18P0_MAX10_BME280', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME), string(name: 'PROJECT', value: 'Max10_System'), string(name: 'DIRECTORY', value: 'CPLD_Microphone_Array')]
+                    }
+                }
                 
                 // mac: {
                 //     build job: 'full-build-mac', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
