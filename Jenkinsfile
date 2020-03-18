@@ -10,7 +10,6 @@ pipeline {
             description: '',
             name : 'FORCE_FULL_BUILD')
     }
-    options { skipDefaultCheckout() }
 
     stages {
         stage ('Build') {
