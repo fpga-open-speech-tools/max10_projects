@@ -10,12 +10,13 @@ pipeline {
             description: '',
             name : 'FORCE_FULL_BUILD')
     }
+    options { checkoutToSubdirectory('CPLD_BME280_I2C') }
 
     stages {
         stage ('Prepare') {
             steps {
                 checkout([$class: 'GitSCM',
-                    branches: [[name: "origin/${BRANCH_PATTERN}"]],
+                    branches: [[name: "origin/${params.BRANCH_PATTERN}"]],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [[$class: 'LocalBranch']],
                     submoduleCfg: [],
