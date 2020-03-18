@@ -35,22 +35,23 @@ pipeline {
             // }
             when { changeset "CPLD_BME280_I2C/*"}
             steps {
-                GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                //GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
                 // Freestyle build trigger calls a list of jobs
                 // Pipeline build() step only calls one job
                 // To run all three jobs in parallel, we use "parallel" step
                 // https://jenkins.io/doc/pipeline/examples/#jobs-in-parallel
-                parallel (
-                    linux: {
-                        build job: 'full-build-linux', parameters: [string(name: 'GIT_BRANCH_NAME', value: GIT_BRANCH)]
-                    },
-                    mac: {
-                        build job: 'full-build-mac', parameters: [string(name: 'GIT_BRANCH_NAME', value: GIT_BRANCH)]
-                    },
-                    windows: {
-                        build job: 'full-build-windows', parameters: [string(name: 'GIT_BRANCH_NAME', value: GIT_BRANCH)]
-                    },
-                    failFast: false)
+                // parallel (
+                //     linux: {
+                //         build job: 'full-build-linux', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
+                //     },
+                //     mac: {
+                //         build job: 'full-build-mac', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
+                //     },
+                //     windows: {
+                //         build job: 'full-build-windows', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
+                //     },
+                //     failFast: false)
+                echo 'full build'
             }
         }
         stage ('Build Skipped') {
