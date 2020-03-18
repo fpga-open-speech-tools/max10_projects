@@ -13,18 +13,18 @@ pipeline {
     options { checkoutToSubdirectory('CPLD_BME280_I2C') }
 
     stages {
-        stage ('Prepare') {
-            steps {
-                checkout([$class: 'GitSCM',
-                    branches: [[name: "origin/${params.BRANCH_PATTERN}"]],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'LocalBranch']],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[
-                        credentialsId: 'b27e7477-aab1-4f4e-a05c-23cd05d217ee',
-                        url: 'https://github.com/fpga-open-speech-tools/max10_projects.git']]])
-            }
-        }
+        // stage ('Prepare') {
+        //     steps {
+        //         checkout([$class: 'GitSCM',
+        //             branches: [[name: "origin/${params.BRANCH_PATTERN}"]],
+        //             doGenerateSubmoduleConfigurations: false,
+        //             extensions: [[$class: 'LocalBranch']],
+        //             submoduleCfg: [],
+        //             userRemoteConfigs: [[
+        //                 credentialsId: 'b27e7477-aab1-4f4e-a05c-23cd05d217ee',
+        //                 url: 'https://github.com/fpga-open-speech-tools/max10_projects.git']]])
+        //     }
+        // }
 
         stage ('Build') {
             // when {
@@ -35,6 +35,7 @@ pipeline {
             // }
             when { changeset "CPLD_BME280_I2C/*"}
             steps {
+                GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
                 // Freestyle build trigger calls a list of jobs
                 // Pipeline build() step only calls one job
                 // To run all three jobs in parallel, we use "parallel" step
