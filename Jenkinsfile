@@ -38,7 +38,7 @@ pipeline {
 
                 parallel {
                     stage(BME280) {
-                        when { changeset "CPLD_BME280_I2C/*"
+                        when { changeset "CPLD_BME280_I2C/*"}
                         build job: 'Q18P0_MAX10_BME280', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME)]
                     }
                     // mac: {
