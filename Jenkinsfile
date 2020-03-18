@@ -27,12 +27,13 @@ pipeline {
         }
 
         stage ('Build') {
-            when {
-                expression {
-                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-                    return GIT_BRANCH == 'origin/master' || params.FORCE_FULL_BUILD
-                }
-            }
+            // when {
+            //     expression {
+            //         GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+            //         return GIT_BRANCH == 'origin/master' || params.FORCE_FULL_BUILD
+            //     }
+            // }
+            when { changeset "CPLD_BME280_I2C/*"}
             steps {
                 // Freestyle build trigger calls a list of jobs
                 // Pipeline build() step only calls one job
