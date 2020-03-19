@@ -1,16 +1,5 @@
 pipeline {
     agent any
-    parameters {
-        string (
-            defaultValue: '*',
-            description: '',
-            name : 'BRANCH_PATTERN')
-        booleanParam (
-            defaultValue: false,
-            description: '',
-            name : 'FORCE_FULL_BUILD')
-    }
-
     stages {
         stage ('Build') {
             parallel {
@@ -23,27 +12,9 @@ pipeline {
                 stage('Mic_Encoder_Decoder') {
                     when { changeset "CPLD_Microphone_Array/*"}
                     steps {
-                        build job: 'Build_Max10_Project', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME), string(name: 'PROJECT', value: 'Max10_System'), string(name: 'DIRECTORY', value: 'CPLD_Microphone_Array')]
+                        build job: 'Q18P0_MAX10_Microphone_Array', parameters: [string(name: 'GIT_BRANCH', value: BRANCH_NAME)]
                     }
                 }
-                
-                // mac: {
-                //     build job: 'full-build-mac', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
-                // },
-                // windows: {
-                //     build job: 'full-build-windows', parameters: [string(name: 'GIT_BRANCH_NAME', value: BRANCH_NAME)]
-                // },
-                }
-        }
-        stage ('Build Skipped') {
-            when {
-                expression {
-                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-                    return !(GIT_BRANCH == 'origin/master' || params.FORCE_FULL_BUILD)
-                }
-            }
-            steps {
-                echo 'Skipped full build.'
             }
         }
     }
