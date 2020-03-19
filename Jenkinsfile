@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'Windows_Node2'}
     stages {
         stage ('Build') {
             parallel {
