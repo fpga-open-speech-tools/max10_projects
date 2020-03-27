@@ -183,7 +183,8 @@ architecture ppl_type of MAX10_system is
     
   -- I2C logic signals
   signal i2c_enable : std_logic;
-  signal i2c_address : std_logic_vector(6 downto 0) := "0111000";
+  --signal i2c_address : std_logic_vector(6 downto 0) := "0111000";
+  signal i2c_address : std_logic_vector(6 downto 0) := "1110110";
   signal i2c_rdwr : std_logic;
   signal i2c_data_write : std_logic_vector(7 downto 0) := (others => '0');
   signal i2c_bsy : std_logic;
@@ -248,8 +249,8 @@ i2c_component : i2c_master
    busy      => i2c_bsy,
    data_rd   => i2c_data_read,
    ack_error => i2c_err,
-   sda       => DIFFIO_B14P,
-   scl       => DIFFIO_B14N
+   sda       => Arduino_IO8,
+   scl       => Arduino_IO11
 );  
 
 NCP5623B : FE_NCP5623B

@@ -56,14 +56,6 @@
          type = "int";
       }
    }
-   element FE_Streaming_Counter_0
-   {
-      datum _sortIndex
-      {
-         value = "7";
-         type = "int";
-      }
-   }
    element altpll_0
    {
       datum _sortIndex
@@ -316,15 +308,6 @@
   <parameter name="sck_multiplier" value="64" />
  </module>
  <module name="FE_NCP5623B_0" kind="FE_NCP5623B" version="1.0" enabled="1" />
- <module
-   name="FE_Streaming_Counter_0"
-   kind="FE_Streaming_Counter"
-   version="1.0"
-   enabled="1">
-  <parameter name="channel_width" value="8" />
-  <parameter name="data_width" value="96" />
-  <parameter name="n_channels" value="8" />
- </module>
  <module name="altpll_0" kind="altpll" version="18.0" enabled="1">
   <parameter name="AUTO_DEVICE_FAMILY" value="MAX 10" />
   <parameter name="AUTO_INCLK_INTERFACE_CLOCK_RATE" value="50000000" />
@@ -506,11 +489,6 @@
  <connection
    kind="avalon_streaming"
    version="18.0"
-   start="FE_Streaming_Counter_0.avalon_streaming_source"
-   end="FE_CPLD_Microphone_Encoder_Decoder_0.bme_input" />
- <connection
-   kind="avalon_streaming"
-   version="18.0"
    start="FE_ICS52000_0.mic_output"
    end="FE_CPLD_Microphone_Encoder_Decoder_0.mic_input" />
  <connection
@@ -554,11 +532,6 @@
    start="clk_0.clk"
    end="FE_NCP5623B_0.sys_clk" />
  <connection
-   kind="clock"
-   version="18.0"
-   start="clk_0.clk"
-   end="FE_Streaming_Counter_0.sys_clk" />
- <connection
    kind="reset"
    version="18.0"
    start="clk_0.clk_reset"
@@ -588,11 +561,6 @@
    version="18.0"
    start="clk_0.clk_reset"
    end="FE_NCP5623B_0.reset" />
- <connection
-   kind="reset"
-   version="18.0"
-   start="clk_0.clk_reset"
-   end="FE_Streaming_Counter_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

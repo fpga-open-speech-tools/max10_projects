@@ -139,106 +139,129 @@ component i2c_master IS
     scl       : INOUT  STD_LOGIC);                   --serial clock output of i2c bus
 END component i2c_master;
   
-signal clk50                : std_logic := '0';
-signal mclk_clk             : std_logic := '0';
-signal serial_control       : std_logic := '0';
-signal serial_clk           : std_logic := '0';
-signal serial_data          : std_logic := '0';
-signal bclk_out             : std_logic := '0';
-signal lrclk_out            : std_logic := '0';
-signal sdata_out            : std_logic := '0';
-signal altpll_0_locked      : std_logic := '0'; 
-signal rj45_sdo_r           : std_logic := '0';
-signal rj45_sdi_r           : std_logic := '0';
+  component FE_NCP5623B is
     
--- I2C logic signals    
-signal i2c_enable           : std_logic;
---  signal i2c_address          : std_logic_vector(6 downto 0) := "0111000";
-signal i2c_address          : std_logic_vector(6 downto 0) := "1000000";
-signal i2c_rdwr             : std_logic;
-signal i2c_data_write       : std_logic_vector(7 downto 0) := (others => '0');
-signal i2c_bsy              : std_logic;
-signal i2c_data_read        : std_logic_vector(7 downto 0) := (others => '0');
-signal i2c_data_clk         : std_logic;
-signal i2c_err              : std_logic;
-
-signal rgb_req              : std_logic;
-signal rgb_en               : std_logic;
+    port (
+      sys_clk               : in  std_logic                     := '0';
+      reset_n               : in  std_logic                     := '0';
       
-signal delay_counter        : unsigned(31 downto 0) := (others => '0');
-signal delay_value          : unsigned(31 downto 0) := x"02FAF080";
+      -- Avalon streaming input
+      rgb_input_data        : in std_logic_vector(15 downto 0)  := (others => '0');
+      rgb_input_valid       : in std_logic                      := '0'; 
+      rgb_input_error       : in std_logic_vector(1 downto 0)   := (others => '0');
+     
+      i2c_enable_out        : out std_logic;
+      i2c_address_out       : out std_logic_vector(6 downto 0) := "0111000";
+      i2c_rdwr_out          : out std_logic;
+      i2c_data_write_out    : out std_logic_vector(7 downto 0) := (others => '0');
+      i2c_bsy_in            : in  std_logic;
+      i2c_data_read_in      : in  std_logic_vector(7 downto 0) := (others => '0');
+        
+      i2c_req_out           : out std_logic;
+      i2c_rdy_in            : in  std_logic
+    );
+  end component FE_NCP5623B;
+  
+  signal clk50                : std_logic := '0';
+  signal mclk_clk             : std_logic := '0';
+  signal serial_control       : std_logic := '0';
+  signal serial_clk           : std_logic := '0';
+  signal serial_data          : std_logic := '0';
+  signal bclk_out             : std_logic := '0';
+  signal lrclk_out            : std_logic := '0';
+  signal sdata_out            : std_logic := '0';
+  signal altpll_0_locked      : std_logic := '0'; 
+  signal rj45_sdo_r           : std_logic := '0';
+  signal rj45_sdi_r           : std_logic := '0';
+        
+  -- I2C logic signals    
+  signal i2c_enable           : std_logic;
+--  signal i2c_address          : std_logic_vector(6 downto 0) := "0111000";
+  signal i2c_address          : std_logic_vector(6 downto 0) := "1000000";
+  signal i2c_rdwr             : std_logic;
+  signal i2c_data_write       : std_logic_vector(7 downto 0) := (others => '0');
+  signal i2c_bsy              : std_logic;
+  signal i2c_data_read        : std_logic_vector(7 downto 0) := (others => '0');
+  signal i2c_data_clk         : std_logic;
+  signal i2c_err              : std_logic;
+  
+  signal rgb_req              : std_logic;
+  signal rgb_en               : std_logic;
+          
+  signal delay_counter        : unsigned(31 downto 0) := (others => '0');
+  signal delay_value          : unsigned(31 downto 0) := x"02FAF080";
+        
+  signal MAX_OUTPUT           : std_logic_vector(4 downto 0) := "01111";
+        
+  signal ILED_OUTPUT          : std_logic_vector(2 downto 0) := "001";
+  signal PWM1                 : std_logic_vector(2 downto 0) := "010";
+  signal PWM2                 : std_logic_vector(2 downto 0) := "011";
+  signal PWM3                 : std_logic_vector(2 downto 0) := "100";
+        
+  signal PWM1_COLOR           : std_logic_vector(4 downto 0) := "00000";
+  signal PWM2_COLOR           : std_logic_vector(4 downto 0) := "00000";
+  signal PWM3_COLOR           : std_logic_vector(4 downto 0) := "00000";
+        
+  signal i2c_write            : std_logic := '0';
+  signal first_byte           : std_logic_vector(7 downto 0) := (others => '0');
+  signal second_byte          : std_logic_vector(7 downto 0) := (others => '0');
+  signal write_two            : std_logic := '0';
+  signal second_byte_loaded   : std_logic := '0';
+   
+  
     
-signal MAX_OUTPUT           : std_logic_vector(4 downto 0) := "01111";
-    
-signal ILED_OUTPUT          : std_logic_vector(2 downto 0) := "001";
-signal PWM1                 : std_logic_vector(2 downto 0) := "010";
-signal PWM2                 : std_logic_vector(2 downto 0) := "011";
-signal PWM3                 : std_logic_vector(2 downto 0) := "100";
-    
-signal PWM1_COLOR           : std_logic_vector(4 downto 0) := "00000";
-signal PWM2_COLOR           : std_logic_vector(4 downto 0) := "00000";
-signal PWM3_COLOR           : std_logic_vector(4 downto 0) := "00000";
-    
-signal i2c_write            : std_logic := '0';
-signal first_byte           : std_logic_vector(7 downto 0) := (others => '0');
-signal second_byte          : std_logic_vector(7 downto 0) := (others => '0');
-signal write_two            : std_logic := '0';
-signal second_byte_loaded   : std_logic := '0';
-
-
-
-type i2c_state is ( idle,load_first_byte,load_second_byte,
-                    tx_wait,i2c_busy_wait, init_device,
-                    load_r, load_g, load_b); 
-signal cur_i2c_state : i2c_state := init_device;
-signal next_i2c_state : i2c_state := idle;
-
-signal bme_data : std_logic_vector(95 downto 0) := (others => '0');
-signal bme_valid : std_logic := '0';
-signal bme_error : std_logic_vector(1 downto 0) := (others => '0');
-
-signal bme_out_data : std_logic_vector(95 downto 0) := (others => '0');
-signal bme_out_valid : std_logic := '0';
-signal bme_out_error : std_logic_vector(1 downto 0) := (others => '0');
-
-signal cfg_data : std_logic_vector(15 downto 0) := (others => '1');
-signal cfg_valid : std_logic := '0';
-signal cfg_error : std_logic_vector(1 downto 0) := (others => '0');
-
-signal rgb_data : std_logic_vector(15 downto 0) := (others => '0');
-signal rgb_valid : std_logic := '0';
-signal rgb_error : std_logic_vector(1 downto 0) := (others => '0');
-
-signal mic_data : std_logic_vector(31 downto 0) := (others => '0');
-signal mic_valid : std_logic := '0';
-signal mic_error : std_logic_vector(1 downto 0) := (others => '0');
-signal mic_channel : std_logic_vector(4 downto 0) := (others => '0');
-
-signal ics52000_mic_data : std_logic_vector(31 downto 0) := (others => '0');
-signal ics52000_mic_valid : std_logic := '0';
-signal ics52000_mic_error : std_logic_vector(1 downto 0) := (others => '0');
-signal ics52000_mic_channel : std_logic_vector(5 downto 0) := (others => '0');
-
-signal mic_out_data : std_logic_vector(31 downto 0) := (others => '0');
-signal mic_out_valid : std_logic := '0';
-signal mic_out_error : std_logic_vector(1 downto 0) := (others => '0');
-signal mic_out_channel : std_logic_vector(3 downto 0) := (others => '0');
-
-signal debug_output : std_logic_vector(7 downto 0) := (others => '0');
-
-signal mic_data_in : std_logic_vector(15 downto 0) := (others => '0');
-signal mic_ws_out  : std_logic_vector(15 downto 0) := (others => '0');
-signal mic_clk_out : std_logic_vector(3 downto 0) := (others => '0');
-signal mics_rdy     : std_logic := '0';
-
-signal bme_enable     : std_logic := '1';
-signal bme_continuous : std_logic := '0';
-signal bme_busy       : std_logic := '0';
-
-signal i2c_control  : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
-signal bme_i2c      : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
-signal rgb_i2c      : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
-
+  type i2c_state is ( idle,load_first_byte,load_second_byte,
+                      tx_wait,i2c_busy_wait, init_device,
+                      load_r, load_g, load_b); 
+  signal cur_i2c_state : i2c_state := init_device;
+  signal next_i2c_state : i2c_state := idle;
+  
+  signal bme_data : std_logic_vector(63 downto 0) := (others => '0');
+  signal bme_valid : std_logic := '0';
+  signal bme_error : std_logic_vector(1 downto 0) := (others => '0');
+  
+  signal bme_out_data : std_logic_vector(95 downto 0) := (others => '0');
+  signal bme_out_valid : std_logic := '0';
+  signal bme_out_error : std_logic_vector(1 downto 0) := (others => '0');
+  
+  signal cfg_data : std_logic_vector(15 downto 0) := (others => '1');
+  signal cfg_valid : std_logic := '0';
+  signal cfg_error : std_logic_vector(1 downto 0) := (others => '0');
+  
+  signal rgb_data : std_logic_vector(15 downto 0) := (others => '0');
+  signal rgb_valid : std_logic := '0';
+  signal rgb_error : std_logic_vector(1 downto 0) := (others => '0');
+  
+  signal mic_data : std_logic_vector(31 downto 0) := (others => '0');
+  signal mic_valid : std_logic := '0';
+  signal mic_error : std_logic_vector(1 downto 0) := (others => '0');
+  signal mic_channel : std_logic_vector(4 downto 0) := (others => '0');
+  
+  signal ics52000_mic_data : std_logic_vector(31 downto 0) := (others => '0');
+  signal ics52000_mic_valid : std_logic := '0';
+  signal ics52000_mic_error : std_logic_vector(1 downto 0) := (others => '0');
+  signal ics52000_mic_channel : std_logic_vector(5 downto 0) := (others => '0');
+  
+  signal mic_out_data : std_logic_vector(31 downto 0) := (others => '0');
+  signal mic_out_valid : std_logic := '0';
+  signal mic_out_error : std_logic_vector(1 downto 0) := (others => '0');
+  signal mic_out_channel : std_logic_vector(3 downto 0) := (others => '0');
+  
+  signal debug_output : std_logic_vector(7 downto 0) := (others => '0');
+  
+  signal mic_data_in : std_logic_vector(15 downto 0) := (others => '0');
+  signal mic_ws_out  : std_logic_vector(15 downto 0) := (others => '0');
+  signal mic_clk_out : std_logic_vector(3 downto 0) := (others => '0');
+  signal mics_rdy     : std_logic := '0';
+  
+  signal bme_enable     : std_logic := '1';
+  signal bme_continuous : std_logic := '0';
+  signal bme_busy       : std_logic := '0';
+  
+  signal i2c_control  : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
+  signal bme_i2c      : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
+  signal rgb_i2c      : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
+  
 begin
 
 pd : cx_system
@@ -269,9 +292,9 @@ pd : cx_system
   
     fpga_serial_clk_clk                 => i2c_data_clk,                     --         fpga_serial_clk.clk
     
-    bme_output_data                     => bme_data,                     --              bme_output.data
-    bme_output_error                    => bme_error,                    --                        .error
-    bme_output_valid                    => bme_valid,                    --                        .valid
+    bme_output_data                     => bme_out_data,                     --              bme_output.data
+    bme_output_error                    => bme_out_error,                    --                        .error
+    bme_output_valid                    => bme_out_valid,                    --                        .valid
     
     ics52000_physical_mic_data_in       => mic_data_in,       --       ics52000_physical.mic_data_in
     ics52000_physical_mic_ws_out        => mic_ws_out,        --                        .mic_ws_out
@@ -418,8 +441,6 @@ mic_data_in <= MICROPHONE_SDI;
 -- Map the microphone word select lines
 MICROPHONE_WS  <= mic_ws_out;
  
-
-
 end;
 
 
