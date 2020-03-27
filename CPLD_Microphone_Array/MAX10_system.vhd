@@ -232,8 +232,8 @@ signal mic_clk_out : std_logic_vector(3 downto 0) := (others => '0');
 signal mics_rdy     : std_logic := '0';
 
 signal bme_enable     : std_logic := '1';
-signal bme_continuous : std_logic := '0';
-signal bme_busy       : std_logic := '0';
+signal bme_continuous : std_logic := '1';
+signal bme_busy       : std_logic := '1';
 
 signal i2c_control  : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
 signal bme_i2c      : i2c_rec := (ena => '0', addr => (others => '0'), rw => '0', data_wr => (others => '0'));
@@ -396,7 +396,7 @@ i2c_component : i2c_master
   variable counter : integer := 0;
   begin
   if rising_edge(CLK_50) then
-    RJ45_SDO <= bme_out_data(counter);
+    MICROPHONE_WS(0) <= bme_data(counter);
     counter := counter + 1;
     if counter = 96 then
       counter := 0;
@@ -416,7 +416,7 @@ MICROPHONE_CLK <= mic_clk_out;
 mic_data_in <= MICROPHONE_SDI;
 
 -- Map the microphone word select lines
-MICROPHONE_WS  <= mic_ws_out;
+-- MICROPHONE_WS  <= mic_ws_out;
  
 
 
