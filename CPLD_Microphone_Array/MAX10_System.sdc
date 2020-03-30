@@ -91,7 +91,11 @@ set_false_path -to [get_pins -nocase -compatibility_mode {*|alt_rst_sync_uq1|alt
 # Set Multicycle Path
 #**************************************************************
 
+set_multicycle_path -from [get_clocks {CLK_50}] -to [get_clocks {serial_clk}] -setup -end 2
+set_multicycle_path -from [get_clocks {CLK_50}] -to [get_clocks {serial_clk}] -hold -end 1
 
+set_multicycle_path -from [get_clocks {serial_clk}] -to [get_clocks {CLK_50}] -setup -start 2
+set_multicycle_path -from [get_clocks {serial_clk}] -to [get_clocks {CLK_50}] -hold -start 1
 
 #**************************************************************
 # Set Maximum Delay
