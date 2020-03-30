@@ -58,8 +58,8 @@ entity MAX10_system is
 		RJ45_SCK    : in std_logic;
     
     -- Microphone Pin Mapping
-    MICROPHONE_CLK : out std_logic_vector(3 downto 0);
-    MICROPHONE_SDI  : in std_logic_vector(15 downto 0);
+    MICROPHONE_CLK  : out std_logic_vector(3 downto 0);
+    MICROPHONE_SDI  : in  std_logic_vector(15 downto 0);
     MICROPHONE_WS   : out std_logic_vector(15 downto 0)
 	);
 
@@ -79,20 +79,6 @@ component cx_system is
     rj45_interface_serial_data_in            : in  std_logic                     := 'X';             -- serial_data_in
     rj45_interface_serial_data_out           : out std_logic;                                        -- serial_data_out
     control_conduit_busy_out                 : out std_logic;                                        -- busy_out
-    fpga_rj45_interface_serial_data_in       : in  std_logic                     := 'X';             -- serial_data_in
-    fpga_rj45_interface_serial_data_out      : out std_logic;                                        -- serial_data_out
-    fpga_rj45_interface_serial_clk_out       : out std_logic;                                        -- serial_clk_out
-    fpga_control_conduit_busy_out            : out std_logic;                                        -- busy_out
-    cfg_input_data                           : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
-    cfg_input_error                          : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-    cfg_input_valid                          : in  std_logic                     := 'X';             -- valid
-    rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
-    rgb_input_error                          : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-    rgb_input_valid                          : in  std_logic                     := 'X';             -- valid
-    fpga_serial_clk_clk                      : in  std_logic                     := 'X';             -- clk
-    bme_output_data                          : out std_logic_vector(95 downto 0);                    -- data
-    bme_output_error                         : out std_logic_vector(1 downto 0);                     -- error
-    bme_output_valid                         : out std_logic;                                        -- valid
     ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
     ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    -- mic_ws_out
     ics52000_physical_clk                    : out std_logic_vector(3 downto 0);                      -- clk
@@ -243,64 +229,42 @@ begin
 
 pd : cx_system
   port map (
-    clk_clk                             => CLK_50,
-    reset_reset_n                       => RESET_N,
-    i2c_clk_clk                         => i2c_data_clk,              --                 i2c_clk.clk
-    led_output_led_sd                   => open,                      --              led_output.led_sd
-    led_output_led_ws                   => open,                      --                        .led_ws
-            
-    pll_mclk_clk                        => open,
-    serial_clk_clk                      => serial_clk,                --          rj45_interface.serial_clk_in
-    rj45_interface_serial_data_in       => rj45_sdi_r,                --                        .serial_data_in
-    rj45_interface_serial_data_out      => rj45_sdo_r,                --                        .serial_data_out
-    control_conduit_busy_out            => open,                                        -- busy_out
-    fpga_rj45_interface_serial_data_in  => rj45_sdo_r,                --     fpga_rj45_interface.serial_data_in
-    fpga_rj45_interface_serial_data_out => rj45_sdi_r,                --                        .serial_data_out
-    fpga_rj45_interface_serial_clk_out  => serial_clk,                --                        .serial_clk_out
-    fpga_control_conduit_busy_out       => open,       --    fpga_control_conduit.busy_out
-    
-    cfg_input_data                      => x"FFFF",                         --               cfg_input.data
-    cfg_input_error                     => open,                        --                        .error
-    cfg_input_valid                     => cfg_valid,                        --                        .valid
-    
-    rgb_input_data                      => rgb_data,                         --               rgb_input.data
-    rgb_input_error                     => rgb_error,                        --                        .error
-    rgb_input_valid                     => rgb_valid,                        --                        .valid
+    clk_clk                                   => CLK_50,
+    reset_reset_n                             => RESET_N,
+    i2c_clk_clk                               => i2c_data_clk,              --                 i2c_clk.clk
+    led_output_led_sd                         => open,                      --              led_output.led_sd
+    led_output_led_ws                         => open,                      --                        .led_ws
+                                              
+    pll_mclk_clk                              => open,
+    serial_clk_clk                            => serial_clk,                --          rj45_interface.serial_clk_in
+    rj45_interface_serial_data_in             => rj45_sdi_r,                --                        .serial_data_in
+    rj45_interface_serial_data_out            => rj45_sdo_r,                --                        .serial_data_out
+    control_conduit_busy_out                  => open,                                        -- busy_out
+                                              
+    ics52000_physical_mic_data_in             => mic_data_in,       --       ics52000_physical.mic_data_in
+    ics52000_physical_mic_ws_out              => mic_ws_out,        --                        .mic_ws_out
+    ics52000_physical_clk                     => mic_clk_out,                --                        .clk
+   
+    bme280_i2c_0_control_conduit_busy_out     => bme_busy,    -- bme280_i2c_0_control_conduit.busy_out
+	  bme280_i2c_0_control_conduit_continuous   => bme_continuous,  --                             .continuous
+	  bme280_i2c_0_control_conduit_enable       => bme_enable,      --                             .enable
+      
+    bme280_i2c_0_i2c_interface_i2c_ack_error  => i2c_err, --   bme280_i2c_0_i2c_interface.i2c_ack_error
+	  bme280_i2c_0_i2c_interface_i2c_addr       => bme_i2c.addr,      --                             .i2c_addr
+	  bme280_i2c_0_i2c_interface_i2c_busy       => i2c_bsy,      --                             .i2c_busy
+	  bme280_i2c_0_i2c_interface_i2c_data_rd    => i2c_data_read,   --                             .i2c_data_rd
+	  bme280_i2c_0_i2c_interface_i2c_data_wr    => bme_i2c.data_wr,   --                             .i2c_data_wr
+	  bme280_i2c_0_i2c_interface_i2c_ena        => bme_i2c.ena,       --                             .i2c_ena
+	  bme280_i2c_0_i2c_interface_i2c_rw         => bme_i2c.rw,       --                             .i2c_rw
   
-    fpga_serial_clk_clk                 => i2c_data_clk,                     --         fpga_serial_clk.clk
-    
-    bme_output_data                     => bme_data,                     --              bme_output.data
-    bme_output_error                    => bme_error,                    --                        .error
-    bme_output_valid                    => bme_valid,                    --                        .valid
-    
-    ics52000_physical_mic_data_in       => mic_data_in,       --       ics52000_physical.mic_data_in
-    ics52000_physical_mic_ws_out        => mic_ws_out,        --                        .mic_ws_out
-    ics52000_physical_clk               => mic_clk_out,                --                        .clk
-    --ics52000_physical_mics_rdy          => mics_rdy,
-    fe_ics52000_0_cfg_input_data        => x"FFFF",        -- fe_ics52000_0_cfg_input.data
-    fe_ics52000_0_cfg_input_error       => cfg_error,       --                        .error
-    fe_ics52000_0_cfg_input_valid       => cfg_valid,       --                        .valid
-
-    bme280_i2c_0_control_conduit_busy_out    => bme_busy,    -- bme280_i2c_0_control_conduit.busy_out
-	  bme280_i2c_0_control_conduit_continuous  => bme_continuous,  --                             .continuous
-	  bme280_i2c_0_control_conduit_enable      => bme_enable,      --                             .enable
-	  
-    bme280_i2c_0_i2c_interface_i2c_ack_error => i2c_err, --   bme280_i2c_0_i2c_interface.i2c_ack_error
-	  bme280_i2c_0_i2c_interface_i2c_addr      => i2c_control.addr,      --                             .i2c_addr
-	  bme280_i2c_0_i2c_interface_i2c_busy      => i2c_bsy,      --                             .i2c_busy
-	  bme280_i2c_0_i2c_interface_i2c_data_rd   => i2c_data_read,   --                             .i2c_data_rd
-	  bme280_i2c_0_i2c_interface_i2c_data_wr   => i2c_control.data_wr,   --                             .i2c_data_wr
-	  bme280_i2c_0_i2c_interface_i2c_ena       => i2c_control.ena,       --                             .i2c_ena
-	  bme280_i2c_0_i2c_interface_i2c_rw        => i2c_control.rw,       --                             .i2c_rw
- 
-    ncp5623b_i2c_conduit_i2c_enable_out      => rgb_i2c.ena,      --         ncp5623b_i2c_conduit.i2c_enable_out
-    ncp5623b_i2c_conduit_i2c_address_out     => rgb_i2c.addr,     --                             .i2c_address_out
-    ncp5623b_i2c_conduit_i2c_rdwr_out        => rgb_i2c.rw,        --                             .i2c_rdwr_out
-    ncp5623b_i2c_conduit_i2c_data_write_out  => rgb_i2c.data_wr,  --                             .i2c_data_write_out
-    ncp5623b_i2c_conduit_i2c_bsy_in          => i2c_bsy,          --                             .i2c_bsy_in
-    ncp5623b_i2c_conduit_i2c_data_read_in    => open,    --                             .i2c_data_read_in
-    ncp5623b_i2c_conduit_i2c_req_out         => rgb_req,         --                             .i2c_req_out
-    ncp5623b_i2c_conduit_i2c_rdy_in          => rgb_en           --                             .i2c_rdy_in
+    ncp5623b_i2c_conduit_i2c_enable_out       => rgb_i2c.ena,      --         ncp5623b_i2c_conduit.i2c_enable_out
+    ncp5623b_i2c_conduit_i2c_address_out      => rgb_i2c.addr,     --                             .i2c_address_out
+    ncp5623b_i2c_conduit_i2c_rdwr_out         => rgb_i2c.rw,        --                             .i2c_rdwr_out
+    ncp5623b_i2c_conduit_i2c_data_write_out   => rgb_i2c.data_wr,  --                             .i2c_data_write_out
+    ncp5623b_i2c_conduit_i2c_bsy_in           => i2c_bsy,          --                             .i2c_bsy_in
+    ncp5623b_i2c_conduit_i2c_data_read_in     => open,    --                             .i2c_data_read_in
+    ncp5623b_i2c_conduit_i2c_req_out          => rgb_req,         --                             .i2c_req_out
+    ncp5623b_i2c_conduit_i2c_rdy_in           => rgb_en           --                             .i2c_rdy_in
   );
 
 
@@ -319,22 +283,22 @@ i2c_component : i2c_master
    scl       => I2C_SCL
 );  
 
-  -- i2c_control_p : process(CLK_50)
-  -- begin
-	-- if rising_edge(CLK_50) then
-	  -- if bme_busy = '1' then
-	  	-- i2c_control <= bme_i2c;
-      -- rgb_en <= '0';
-      -- LED_GREEN <= '1';
-      -- LED_YELLOW <= '0';
-	  -- else 
-	  	-- i2c_control <= rgb_i2c;
-      -- rgb_en <= '1';
-      -- LED_GREEN <= '1';
-      -- LED_YELLOW <= '0';
-	  -- end if;
-	-- end if;
-  -- end process;
+  i2c_control_p : process(CLK_50)
+  begin
+	if rising_edge(CLK_50) then
+	  if bme_busy = '1' then
+	  	i2c_control <= bme_i2c;
+      rgb_en <= '0';
+      LED_GREEN <= '1';
+      LED_YELLOW <= '0';
+	  else 
+	  	i2c_control <= rgb_i2c;
+      rgb_en <= '1';
+      LED_GREEN <= '1';
+      LED_YELLOW <= '0';
+	  end if;
+	end if;
+  end process;
     
   -- Process to start the data transmission after X clock cycles
   counter_process: process(CLK_50,RESET_N)
@@ -390,24 +354,11 @@ i2c_component : i2c_master
       PWM3_COLOR <= "00000";
     end if;
   end process;
-  
-  
-  process (CLK_50)
-  variable counter : integer := 0;
-  begin
-  if rising_edge(CLK_50) then
-    MICROPHONE_WS(0) <= bme_data(counter);
-    counter := counter + 1;
-    if counter = 96 then
-      counter := 0;
-    end if;
-  end if;
-end process;
-  
+   
 -- Map the RJ45 signals
--- rj45_sdi_r <= RJ45_SDI; -- CPLD SDI
--- serial_clk <= RJ45_SCK; -- CPLD SCK
--- RJ45_SDO   <= rj45_sdo_r; -- CPLD SDO
+rj45_sdi_r <= RJ45_SDI; -- CPLD SDI
+serial_clk <= RJ45_SCK; -- CPLD SCK
+RJ45_SDO   <= rj45_sdo_r; -- CPLD SDO
 
 -- Map the microphone CLK_50s
 MICROPHONE_CLK <= mic_clk_out;
@@ -416,7 +367,7 @@ MICROPHONE_CLK <= mic_clk_out;
 mic_data_in <= MICROPHONE_SDI;
 
 -- Map the microphone word select lines
--- MICROPHONE_WS  <= mic_ws_out;
+MICROPHONE_WS  <= mic_ws_out;
  
 
 

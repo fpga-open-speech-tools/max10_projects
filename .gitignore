@@ -25,3 +25,5 @@ incremental_db/
 *.tmp
 *.bak
 simulation/
+*_old/
+*_bak/

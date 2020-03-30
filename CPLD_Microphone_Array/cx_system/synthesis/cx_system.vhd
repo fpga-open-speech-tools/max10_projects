@@ -19,12 +19,6 @@ entity cx_system is
 		bme280_i2c_0_i2c_interface_i2c_data_wr   : out std_logic_vector(7 downto 0);                     --                             .i2c_data_wr
 		bme280_i2c_0_i2c_interface_i2c_ena       : out std_logic;                                        --                             .i2c_ena
 		bme280_i2c_0_i2c_interface_i2c_rw        : out std_logic;                                        --                             .i2c_rw
-		bme_output_data                          : out std_logic_vector(95 downto 0);                    --                   bme_output.data
-		bme_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
-		bme_output_valid                         : out std_logic;                                        --                             .valid
-		cfg_input_data                           : in  std_logic_vector(15 downto 0) := (others => '0'); --                    cfg_input.data
-		cfg_input_error                          : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
-		cfg_input_valid                          : in  std_logic                     := '0';             --                             .valid
 		cfg_output_data                          : out std_logic_vector(15 downto 0);                    --                   cfg_output.data
 		cfg_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
 		cfg_output_valid                         : out std_logic;                                        --                             .valid
@@ -33,11 +27,6 @@ entity cx_system is
 		fe_ics52000_0_cfg_input_data             : in  std_logic_vector(15 downto 0) := (others => '0'); --      fe_ics52000_0_cfg_input.data
 		fe_ics52000_0_cfg_input_error            : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
 		fe_ics52000_0_cfg_input_valid            : in  std_logic                     := '0';             --                             .valid
-		fpga_control_conduit_busy_out            : out std_logic;                                        --         fpga_control_conduit.busy_out
-		fpga_rj45_interface_serial_data_in       : in  std_logic                     := '0';             --          fpga_rj45_interface.serial_data_in
-		fpga_rj45_interface_serial_data_out      : out std_logic;                                        --                             .serial_data_out
-		fpga_rj45_interface_serial_clk_out       : out std_logic;                                        --                             .serial_clk_out
-		fpga_serial_clk_clk                      : in  std_logic                     := '0';             --              fpga_serial_clk.clk
 		i2c_clk_clk                              : out std_logic;                                        --                      i2c_clk.clk
 		ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => '0'); --            ics52000_physical.mic_data_in
 		ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    --                             .mic_ws_out
@@ -45,10 +34,6 @@ entity cx_system is
 		ics52000_physical_mics_rdy               : out std_logic;                                        --                             .mics_rdy
 		led_output_led_sd                        : out std_logic;                                        --                   led_output.led_sd
 		led_output_led_ws                        : out std_logic;                                        --                             .led_ws
-		mic_output_channel                       : out std_logic_vector(3 downto 0);                     --                   mic_output.channel
-		mic_output_data                          : out std_logic_vector(31 downto 0);                    --                             .data
-		mic_output_error                         : out std_logic_vector(1 downto 0);                     --                             .error
-		mic_output_valid                         : out std_logic;                                        --                             .valid
 		ncp5623b_i2c_conduit_i2c_enable_out      : out std_logic;                                        --         ncp5623b_i2c_conduit.i2c_enable_out
 		ncp5623b_i2c_conduit_i2c_address_out     : out std_logic_vector(6 downto 0);                     --                             .i2c_address_out
 		ncp5623b_i2c_conduit_i2c_rdwr_out        : out std_logic;                                        --                             .i2c_rdwr_out
@@ -59,9 +44,6 @@ entity cx_system is
 		ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := '0';             --                             .i2c_rdy_in
 		pll_mclk_clk                             : out std_logic;                                        --                     pll_mclk.clk
 		reset_reset_n                            : in  std_logic                     := '0';             --                        reset.reset_n
-		rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => '0'); --                    rgb_input.data
-		rgb_input_error                          : in  std_logic_vector(1 downto 0)  := (others => '0'); --                             .error
-		rgb_input_valid                          : in  std_logic                     := '0';             --                             .valid
 		rj45_interface_serial_data_in            : in  std_logic                     := '0';             --               rj45_interface.serial_data_in
 		rj45_interface_serial_data_out           : out std_logic;                                        --                             .serial_data_out
 		serial_clk_clk                           : in  std_logic                     := '0'              --                   serial_clk.clk
@@ -103,40 +85,6 @@ architecture rtl of cx_system is
 			serial_clk_in     : in  std_logic                     := 'X'              -- clk
 		);
 	end component FE_CPLD_Microphone_Encoder_Decoder;
-
-	component FE_FPGA_Microphone_Encoder_Decoder is
-		generic (
-			avalon_data_width : integer := 32;
-			mic_data_width    : integer := 24;
-			bme_data_width    : integer := 96;
-			rgb_data_width    : integer := 16;
-			cfg_data_width    : integer := 16;
-			ch_width          : integer := 4;
-			n_mics            : integer := 16
-		);
-		port (
-			reset_n         : in  std_logic                     := 'X';             -- reset_n
-			serial_data_in  : in  std_logic                     := 'X';             -- serial_data_in
-			serial_data_out : out std_logic;                                        -- serial_data_out
-			serial_clk_out  : out std_logic;                                        -- serial_clk_out
-			sys_clk         : in  std_logic                     := 'X';             -- clk
-			busy_out        : out std_logic;                                        -- busy_out
-			bme_out_data    : out std_logic_vector(95 downto 0);                    -- data
-			bme_out_error   : out std_logic_vector(1 downto 0);                     -- error
-			bme_out_valid   : out std_logic;                                        -- valid
-			mic_out_channel : out std_logic_vector(3 downto 0);                     -- channel
-			mic_out_data    : out std_logic_vector(31 downto 0);                    -- data
-			mic_out_error   : out std_logic_vector(1 downto 0);                     -- error
-			mic_out_valid   : out std_logic;                                        -- valid
-			cfg_input_data  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
-			cfg_input_error : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			cfg_input_valid : in  std_logic                     := 'X';             -- valid
-			rgb_input_data  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
-			rgb_input_error : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			rgb_input_valid : in  std_logic                     := 'X';             -- valid
-			serial_clk      : in  std_logic                     := 'X'              -- clk
-		);
-	end component FE_FPGA_Microphone_Encoder_Decoder;
 
 	component FE_ICS52000 is
 		generic (
@@ -183,22 +131,6 @@ architecture rtl of cx_system is
 			i2c_rdy_in         : in  std_logic                     := 'X'              -- i2c_rdy_in
 		);
 	end component FE_NCP5623B;
-
-	component FE_Streaming_Counter is
-		generic (
-			n_channels    : integer := 8;
-			channel_width : integer := 8;
-			data_width    : integer := 32
-		);
-		port (
-			reset_n             : in  std_logic                     := 'X'; -- reset_n
-			data_output_channel : out std_logic_vector(7 downto 0);         -- channel
-			data_output_data    : out std_logic_vector(95 downto 0);        -- data
-			data_output_error   : out std_logic_vector(1 downto 0);         -- error
-			data_output_valid   : out std_logic;                            -- valid
-			sys_clk             : in  std_logic                     := 'X'  -- clk
-		);
-	end component FE_Streaming_Counter;
 
 	component cx_system_altpll_0 is
 		port (
@@ -276,38 +208,6 @@ architecture rtl of cx_system is
 		port (
 			in_clk_0_clk   : in  std_logic                     := 'X';             -- clk
 			in_rst_0_reset : in  std_logic                     := 'X';             -- reset
-			in_0_data      : in  std_logic_vector(95 downto 0) := (others => 'X'); -- data
-			in_0_valid     : in  std_logic                     := 'X';             -- valid
-			in_0_error     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			in_0_channel   : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- channel
-			out_0_data     : out std_logic_vector(95 downto 0);                    -- data
-			out_0_valid    : out std_logic;                                        -- valid
-			out_0_error    : out std_logic_vector(1 downto 0)                      -- error
-		);
-	end component cx_system_avalon_st_adapter;
-
-	component cx_system_avalon_st_adapter_001 is
-		generic (
-			inBitsPerSymbol : integer := 8;
-			inUsePackets    : integer := 0;
-			inDataWidth     : integer := 8;
-			inChannelWidth  : integer := 3;
-			inErrorWidth    : integer := 2;
-			inUseEmptyPort  : integer := 0;
-			inUseValid      : integer := 1;
-			inUseReady      : integer := 1;
-			inReadyLatency  : integer := 0;
-			outDataWidth    : integer := 32;
-			outChannelWidth : integer := 3;
-			outErrorWidth   : integer := 2;
-			outUseEmptyPort : integer := 0;
-			outUseValid     : integer := 1;
-			outUseReady     : integer := 1;
-			outReadyLatency : integer := 0
-		);
-		port (
-			in_clk_0_clk   : in  std_logic                     := 'X';             -- clk
-			in_rst_0_reset : in  std_logic                     := 'X';             -- reset
 			in_0_data      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
 			in_0_valid     : in  std_logic                     := 'X';             -- valid
 			in_0_error     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
@@ -317,7 +217,7 @@ architecture rtl of cx_system is
 			out_0_error    : out std_logic_vector(1 downto 0);                     -- error
 			out_0_channel  : out std_logic_vector(4 downto 0)                      -- channel
 		);
-	end component cx_system_avalon_st_adapter_001;
+	end component cx_system_avalon_st_adapter;
 
 	component altera_reset_controller is
 		generic (
@@ -385,28 +285,24 @@ architecture rtl of cx_system is
 		);
 	end component altera_reset_controller;
 
-	signal fe_cpld_microphone_encoder_decoder_0_rgb_output_valid  : std_logic;                     -- FE_CPLD_Microphone_Encoder_Decoder_0:rgb_out_valid -> FE_NCP5623B_0:rgb_input_valid
-	signal fe_cpld_microphone_encoder_decoder_0_rgb_output_data   : std_logic_vector(15 downto 0); -- FE_CPLD_Microphone_Encoder_Decoder_0:rgb_out_data -> FE_NCP5623B_0:rgb_input_data
-	signal fe_cpld_microphone_encoder_decoder_0_rgb_output_error  : std_logic_vector(1 downto 0);  -- FE_CPLD_Microphone_Encoder_Decoder_0:rgb_out_error -> FE_NCP5623B_0:rgb_input_error
-	signal altpll_0_c1_clk                                        : std_logic;                     -- altpll_0:c1 -> FE_ICS52000_0:mic_clk_in
-	signal fe_streaming_counter_0_avalon_streaming_source_valid   : std_logic;                     -- FE_Streaming_Counter_0:data_output_valid -> avalon_st_adapter:in_0_valid
-	signal fe_streaming_counter_0_avalon_streaming_source_data    : std_logic_vector(95 downto 0); -- FE_Streaming_Counter_0:data_output_data -> avalon_st_adapter:in_0_data
-	signal fe_streaming_counter_0_avalon_streaming_source_channel : std_logic_vector(7 downto 0);  -- FE_Streaming_Counter_0:data_output_channel -> avalon_st_adapter:in_0_channel
-	signal fe_streaming_counter_0_avalon_streaming_source_error   : std_logic_vector(1 downto 0);  -- FE_Streaming_Counter_0:data_output_error -> avalon_st_adapter:in_0_error
-	signal avalon_st_adapter_out_0_valid                          : std_logic;                     -- avalon_st_adapter:out_0_valid -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_valid
-	signal avalon_st_adapter_out_0_data                           : std_logic_vector(95 downto 0); -- avalon_st_adapter:out_0_data -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_data
-	signal avalon_st_adapter_out_0_error                          : std_logic_vector(1 downto 0);  -- avalon_st_adapter:out_0_error -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_error
-	signal fe_ics52000_0_mic_output_valid                         : std_logic;                     -- FE_ICS52000_0:mic_out_valid -> avalon_st_adapter_001:in_0_valid
-	signal fe_ics52000_0_mic_output_data                          : std_logic_vector(31 downto 0); -- FE_ICS52000_0:mic_out_data -> avalon_st_adapter_001:in_0_data
-	signal fe_ics52000_0_mic_output_channel                       : std_logic_vector(5 downto 0);  -- FE_ICS52000_0:mic_out_channel -> avalon_st_adapter_001:in_0_channel
-	signal fe_ics52000_0_mic_output_error                         : std_logic_vector(1 downto 0);  -- FE_ICS52000_0:mic_out_error -> avalon_st_adapter_001:in_0_error
-	signal avalon_st_adapter_001_out_0_valid                      : std_logic;                     -- avalon_st_adapter_001:out_0_valid -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_valid
-	signal avalon_st_adapter_001_out_0_data                       : std_logic_vector(31 downto 0); -- avalon_st_adapter_001:out_0_data -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_data
-	signal avalon_st_adapter_001_out_0_channel                    : std_logic_vector(4 downto 0);  -- avalon_st_adapter_001:out_0_channel -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_channel
-	signal avalon_st_adapter_001_out_0_error                      : std_logic_vector(1 downto 0);  -- avalon_st_adapter_001:out_0_error -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_error
-	signal rst_controller_reset_out_reset                         : std_logic;                     -- rst_controller:reset_out -> [altpll_0:reset, avalon_st_adapter:in_rst_0_reset, avalon_st_adapter_001:in_rst_0_reset, rst_controller_reset_out_reset:in]
-	signal reset_reset_n_ports_inv                                : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
-	signal rst_controller_reset_out_reset_ports_inv               : std_logic;                     -- rst_controller_reset_out_reset:inv -> [FE_CPLD_Microphone_Encoder_Decoder_0:reset_n, FE_FPGA_Microphone_Encoder_Decoder_0:reset_n, FE_ICS52000_0:reset_n, FE_NCP5623B_0:reset_n, FE_Streaming_Counter_0:reset_n, bme280_i2c_0:reset_n]
+	signal bme280_i2c_0_bme_output_valid                         : std_logic;                     -- bme280_i2c_0:bme_output_valid -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_valid
+	signal bme280_i2c_0_bme_output_data                          : std_logic_vector(95 downto 0); -- bme280_i2c_0:bme_output_data -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_data
+	signal bme280_i2c_0_bme_output_error                         : std_logic_vector(1 downto 0);  -- bme280_i2c_0:bme_output_error -> FE_CPLD_Microphone_Encoder_Decoder_0:bme_input_error
+	signal fe_cpld_microphone_encoder_decoder_0_rgb_output_valid : std_logic;                     -- FE_CPLD_Microphone_Encoder_Decoder_0:rgb_out_valid -> FE_NCP5623B_0:rgb_input_valid
+	signal fe_cpld_microphone_encoder_decoder_0_rgb_output_data  : std_logic_vector(15 downto 0); -- FE_CPLD_Microphone_Encoder_Decoder_0:rgb_out_data -> FE_NCP5623B_0:rgb_input_data
+	signal fe_cpld_microphone_encoder_decoder_0_rgb_output_error : std_logic_vector(1 downto 0);  -- FE_CPLD_Microphone_Encoder_Decoder_0:rgb_out_error -> FE_NCP5623B_0:rgb_input_error
+	signal altpll_0_c1_clk                                       : std_logic;                     -- altpll_0:c1 -> FE_ICS52000_0:mic_clk_in
+	signal fe_ics52000_0_mic_output_valid                        : std_logic;                     -- FE_ICS52000_0:mic_out_valid -> avalon_st_adapter:in_0_valid
+	signal fe_ics52000_0_mic_output_data                         : std_logic_vector(31 downto 0); -- FE_ICS52000_0:mic_out_data -> avalon_st_adapter:in_0_data
+	signal fe_ics52000_0_mic_output_channel                      : std_logic_vector(5 downto 0);  -- FE_ICS52000_0:mic_out_channel -> avalon_st_adapter:in_0_channel
+	signal fe_ics52000_0_mic_output_error                        : std_logic_vector(1 downto 0);  -- FE_ICS52000_0:mic_out_error -> avalon_st_adapter:in_0_error
+	signal avalon_st_adapter_out_0_valid                         : std_logic;                     -- avalon_st_adapter:out_0_valid -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_valid
+	signal avalon_st_adapter_out_0_data                          : std_logic_vector(31 downto 0); -- avalon_st_adapter:out_0_data -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_data
+	signal avalon_st_adapter_out_0_channel                       : std_logic_vector(4 downto 0);  -- avalon_st_adapter:out_0_channel -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_channel
+	signal avalon_st_adapter_out_0_error                         : std_logic_vector(1 downto 0);  -- avalon_st_adapter:out_0_error -> FE_CPLD_Microphone_Encoder_Decoder_0:mic_input_error
+	signal rst_controller_reset_out_reset                        : std_logic;                     -- rst_controller:reset_out -> [altpll_0:reset, avalon_st_adapter:in_rst_0_reset, rst_controller_reset_out_reset:in]
+	signal reset_reset_n_ports_inv                               : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
+	signal rst_controller_reset_out_reset_ports_inv              : std_logic;                     -- rst_controller_reset_out_reset:inv -> [FE_CPLD_Microphone_Encoder_Decoder_0:reset_n, FE_ICS52000_0:reset_n, FE_NCP5623B_0:reset_n, bme280_i2c_0:reset_n]
 
 begin
 
@@ -427,54 +323,21 @@ begin
 			serial_data_in    => rj45_interface_serial_data_in,                         --  RJ45_Interface.serial_data_in
 			serial_data_out   => rj45_interface_serial_data_out,                        --                .serial_data_out
 			sys_clk           => clk_clk,                                               --         sys_clk.clk
-			mic_input_data    => avalon_st_adapter_001_out_0_data,                      --       mic_input.data
-			mic_input_channel => avalon_st_adapter_001_out_0_channel,                   --                .channel
-			mic_input_error   => avalon_st_adapter_001_out_0_error,                     --                .error
-			mic_input_valid   => avalon_st_adapter_001_out_0_valid,                     --                .valid
+			mic_input_data    => avalon_st_adapter_out_0_data,                          --       mic_input.data
+			mic_input_channel => avalon_st_adapter_out_0_channel,                       --                .channel
+			mic_input_error   => avalon_st_adapter_out_0_error,                         --                .error
+			mic_input_valid   => avalon_st_adapter_out_0_valid,                         --                .valid
 			rgb_out_data      => fe_cpld_microphone_encoder_decoder_0_rgb_output_data,  --      rgb_output.data
 			rgb_out_error     => fe_cpld_microphone_encoder_decoder_0_rgb_output_error, --                .error
 			rgb_out_valid     => fe_cpld_microphone_encoder_decoder_0_rgb_output_valid, --                .valid
 			cfg_out_data      => cfg_output_data,                                       --      cfg_output.data
 			cfg_out_error     => cfg_output_error,                                      --                .error
 			cfg_out_valid     => cfg_output_valid,                                      --                .valid
-			bme_input_data    => avalon_st_adapter_out_0_data,                          --       bme_input.data
-			bme_input_error   => avalon_st_adapter_out_0_error,                         --                .error
-			bme_input_valid   => avalon_st_adapter_out_0_valid,                         --                .valid
+			bme_input_data    => bme280_i2c_0_bme_output_data,                          --       bme_input.data
+			bme_input_error   => bme280_i2c_0_bme_output_error,                         --                .error
+			bme_input_valid   => bme280_i2c_0_bme_output_valid,                         --                .valid
 			busy_out          => control_conduit_busy_out,                              -- control_conduit.busy_out
 			serial_clk_in     => serial_clk_clk                                         --      serial_clk.clk
-		);
-
-	fe_fpga_microphone_encoder_decoder_0 : component FE_FPGA_Microphone_Encoder_Decoder
-		generic map (
-			avalon_data_width => 32,
-			mic_data_width    => 24,
-			bme_data_width    => 96,
-			rgb_data_width    => 16,
-			cfg_data_width    => 16,
-			ch_width          => 4,
-			n_mics            => 16
-		)
-		port map (
-			reset_n         => rst_controller_reset_out_reset_ports_inv, --           reset.reset_n
-			serial_data_in  => fpga_rj45_interface_serial_data_in,       --  RJ45_Interface.serial_data_in
-			serial_data_out => fpga_rj45_interface_serial_data_out,      --                .serial_data_out
-			serial_clk_out  => fpga_rj45_interface_serial_clk_out,       --                .serial_clk_out
-			sys_clk         => clk_clk,                                  --         sys_clk.clk
-			busy_out        => fpga_control_conduit_busy_out,            -- control_conduit.busy_out
-			bme_out_data    => open,                                     --      bme_output.data
-			bme_out_error   => open,                                     --                .error
-			bme_out_valid   => open,                                     --                .valid
-			mic_out_channel => mic_output_channel,                       --      mic_output.channel
-			mic_out_data    => mic_output_data,                          --                .data
-			mic_out_error   => mic_output_error,                         --                .error
-			mic_out_valid   => mic_output_valid,                         --                .valid
-			cfg_input_data  => cfg_input_data,                           --       cfg_input.data
-			cfg_input_error => cfg_input_error,                          --                .error
-			cfg_input_valid => cfg_input_valid,                          --                .valid
-			rgb_input_data  => rgb_input_data,                           --       rgb_input.data
-			rgb_input_error => rgb_input_error,                          --                .error
-			rgb_input_valid => rgb_input_valid,                          --                .valid
-			serial_clk      => fpga_serial_clk_clk                       --      serial_clk.clk
 		);
 
 	fe_ics52000_0 : component FE_ICS52000
@@ -521,21 +384,6 @@ begin
 			i2c_rdy_in         => ncp5623b_i2c_conduit_i2c_rdy_in                        --                      .i2c_rdy_in
 		);
 
-	fe_streaming_counter_0 : component FE_Streaming_Counter
-		generic map (
-			n_channels    => 8,
-			channel_width => 8,
-			data_width    => 96
-		)
-		port map (
-			reset_n             => rst_controller_reset_out_reset_ports_inv,               --                   reset.reset_n
-			data_output_channel => fe_streaming_counter_0_avalon_streaming_source_channel, -- avalon_streaming_source.channel
-			data_output_data    => fe_streaming_counter_0_avalon_streaming_source_data,    --                        .data
-			data_output_error   => fe_streaming_counter_0_avalon_streaming_source_error,   --                        .error
-			data_output_valid   => fe_streaming_counter_0_avalon_streaming_source_valid,   --                        .valid
-			sys_clk             => clk_clk                                                 --                 sys_clk.clk
-		);
-
 	altpll_0 : component cx_system_altpll_0
 		port map (
 			clk                => clk_clk,                        --       inclk_interface.clk
@@ -573,9 +421,9 @@ begin
 		port map (
 			reset_n          => rst_controller_reset_out_reset_ports_inv, --           reset.reset_n
 			sys_clk          => clk_clk,                                  --      clock_sink.clk
-			bme_output_data  => bme_output_data,                          --      bme_output.data
-			bme_output_error => bme_output_error,                         --                .error
-			bme_output_valid => bme_output_valid,                         --                .valid
+			bme_output_data  => bme280_i2c_0_bme_output_data,             --      bme_output.data
+			bme_output_error => bme280_i2c_0_bme_output_error,            --                .error
+			bme_output_valid => bme280_i2c_0_bme_output_valid,            --                .valid
 			busy_out         => bme280_i2c_0_control_conduit_busy_out,    -- control_conduit.busy_out
 			continuous       => bme280_i2c_0_control_conduit_continuous,  --                .continuous
 			enable           => bme280_i2c_0_control_conduit_enable,      --                .enable
@@ -589,37 +437,6 @@ begin
 		);
 
 	avalon_st_adapter : component cx_system_avalon_st_adapter
-		generic map (
-			inBitsPerSymbol => 96,
-			inUsePackets    => 0,
-			inDataWidth     => 96,
-			inChannelWidth  => 8,
-			inErrorWidth    => 2,
-			inUseEmptyPort  => 0,
-			inUseValid      => 1,
-			inUseReady      => 0,
-			inReadyLatency  => 0,
-			outDataWidth    => 96,
-			outChannelWidth => 0,
-			outErrorWidth   => 2,
-			outUseEmptyPort => 0,
-			outUseValid     => 1,
-			outUseReady     => 0,
-			outReadyLatency => 0
-		)
-		port map (
-			in_clk_0_clk   => clk_clk,                                                -- in_clk_0.clk
-			in_rst_0_reset => rst_controller_reset_out_reset,                         -- in_rst_0.reset
-			in_0_data      => fe_streaming_counter_0_avalon_streaming_source_data,    --     in_0.data
-			in_0_valid     => fe_streaming_counter_0_avalon_streaming_source_valid,   --         .valid
-			in_0_error     => fe_streaming_counter_0_avalon_streaming_source_error,   --         .error
-			in_0_channel   => fe_streaming_counter_0_avalon_streaming_source_channel, --         .channel
-			out_0_data     => avalon_st_adapter_out_0_data,                           --    out_0.data
-			out_0_valid    => avalon_st_adapter_out_0_valid,                          --         .valid
-			out_0_error    => avalon_st_adapter_out_0_error                           --         .error
-		);
-
-	avalon_st_adapter_001 : component cx_system_avalon_st_adapter_001
 		generic map (
 			inBitsPerSymbol => 32,
 			inUsePackets    => 0,
@@ -639,16 +456,16 @@ begin
 			outReadyLatency => 0
 		)
 		port map (
-			in_clk_0_clk   => clk_clk,                             -- in_clk_0.clk
-			in_rst_0_reset => rst_controller_reset_out_reset,      -- in_rst_0.reset
-			in_0_data      => fe_ics52000_0_mic_output_data,       --     in_0.data
-			in_0_valid     => fe_ics52000_0_mic_output_valid,      --         .valid
-			in_0_error     => fe_ics52000_0_mic_output_error,      --         .error
-			in_0_channel   => fe_ics52000_0_mic_output_channel,    --         .channel
-			out_0_data     => avalon_st_adapter_001_out_0_data,    --    out_0.data
-			out_0_valid    => avalon_st_adapter_001_out_0_valid,   --         .valid
-			out_0_error    => avalon_st_adapter_001_out_0_error,   --         .error
-			out_0_channel  => avalon_st_adapter_001_out_0_channel  --         .channel
+			in_clk_0_clk   => clk_clk,                          -- in_clk_0.clk
+			in_rst_0_reset => rst_controller_reset_out_reset,   -- in_rst_0.reset
+			in_0_data      => fe_ics52000_0_mic_output_data,    --     in_0.data
+			in_0_valid     => fe_ics52000_0_mic_output_valid,   --         .valid
+			in_0_error     => fe_ics52000_0_mic_output_error,   --         .error
+			in_0_channel   => fe_ics52000_0_mic_output_channel, --         .channel
+			out_0_data     => avalon_st_adapter_out_0_data,     --    out_0.data
+			out_0_valid    => avalon_st_adapter_out_0_valid,    --         .valid
+			out_0_error    => avalon_st_adapter_out_0_error,    --         .error
+			out_0_channel  => avalon_st_adapter_out_0_channel   --         .channel
 		);
 
 	rst_controller : component altera_reset_controller

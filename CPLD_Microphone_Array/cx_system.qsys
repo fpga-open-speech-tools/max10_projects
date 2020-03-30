@@ -22,7 +22,7 @@
          type = "boolean";
       }
    }
-   element FE_FPGA_Microphone_Encoder_Decoder_0
+   element FE_ICS52000_0
    {
       datum _sortIndex
       {
@@ -35,32 +35,11 @@
          type = "boolean";
       }
    }
-   element FE_ICS52000_0
-   {
-      datum _sortIndex
-      {
-         value = "4";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "1";
-         type = "boolean";
-      }
-   }
    element FE_NCP5623B_0
    {
       datum _sortIndex
       {
-         value = "6";
-         type = "int";
-      }
-   }
-   element FE_Streaming_Counter_0
-   {
-      datum _sortIndex
-      {
-         value = "7";
+         value = "5";
          type = "int";
       }
    }
@@ -81,7 +60,7 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "4";
          type = "int";
       }
       datum sopceditor_expanded
@@ -101,6 +80,14 @@
       {
          value = "0";
          type = "boolean";
+      }
+   }
+   element cx_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "MAX 10";
+         type = "String";
       }
    }
    element cx_system
@@ -196,16 +183,6 @@
    type="conduit"
    dir="end" />
  <interface
-   name="bme_output"
-   internal="bme280_i2c_0.bme_output"
-   type="avalon_streaming"
-   dir="start" />
- <interface
-   name="cfg_input"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.cfg_input"
-   type="avalon_streaming"
-   dir="end" />
- <interface
    name="cfg_output"
    internal="FE_CPLD_Microphone_Encoder_Decoder_0.cfg_output"
    type="avalon_streaming"
@@ -224,24 +201,6 @@
    internal="FE_ICS52000_0.cfg_input"
    type="avalon_streaming"
    dir="end" />
- <interface
-   name="fpga_control_conduit"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.control_conduit"
-   type="conduit"
-   dir="end" />
- <interface
-   name="fpga_debug_out"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.debug_out" />
- <interface
-   name="fpga_rj45_interface"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.RJ45_Interface"
-   type="conduit"
-   dir="end" />
- <interface
-   name="fpga_serial_clk"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.serial_clk"
-   type="clock"
-   dir="end" />
  <interface name="i2c_clk" internal="altpll_0.c2" type="clock" dir="start" />
  <interface
    name="ics52000_physical"
@@ -254,22 +213,12 @@
    type="conduit"
    dir="end" />
  <interface
-   name="mic_output"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.mic_output"
-   type="avalon_streaming"
-   dir="start" />
- <interface
    name="ncp5623b_i2c_conduit"
    internal="FE_NCP5623B_0.i2c_component_conduit"
    type="conduit"
    dir="end" />
  <interface name="pll_mclk" internal="altpll_0.c0" type="clock" dir="start" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
- <interface
-   name="rgb_input"
-   internal="FE_FPGA_Microphone_Encoder_Decoder_0.rgb_input"
-   type="avalon_streaming"
-   dir="end" />
  <interface
    name="rj45_interface"
    internal="FE_CPLD_Microphone_Encoder_Decoder_0.RJ45_Interface"
@@ -293,19 +242,6 @@
   <parameter name="n_mics" value="16" />
   <parameter name="rgb_data_width" value="16" />
  </module>
- <module
-   name="FE_FPGA_Microphone_Encoder_Decoder_0"
-   kind="FE_FPGA_Microphone_Encoder_Decoder"
-   version="1.0"
-   enabled="1">
-  <parameter name="avalon_data_width" value="32" />
-  <parameter name="bme_data_width" value="96" />
-  <parameter name="cfg_data_width" value="16" />
-  <parameter name="ch_width" value="4" />
-  <parameter name="mic_data_width" value="24" />
-  <parameter name="n_mics" value="16" />
-  <parameter name="rgb_data_width" value="16" />
- </module>
  <module name="FE_ICS52000_0" kind="FE_ICS52000" version="1.0" enabled="1">
   <parameter name="avalon_data_width" value="32" />
   <parameter name="cfg_data_width" value="16" />
@@ -316,15 +252,6 @@
   <parameter name="sck_multiplier" value="64" />
  </module>
  <module name="FE_NCP5623B_0" kind="FE_NCP5623B" version="1.0" enabled="1" />
- <module
-   name="FE_Streaming_Counter_0"
-   kind="FE_Streaming_Counter"
-   version="1.0"
-   enabled="1">
-  <parameter name="channel_width" value="8" />
-  <parameter name="data_width" value="96" />
-  <parameter name="n_channels" value="8" />
- </module>
  <module name="altpll_0" kind="altpll" version="18.0" enabled="1">
   <parameter name="AUTO_DEVICE_FAMILY" value="MAX 10" />
   <parameter name="AUTO_INCLK_INTERFACE_CLOCK_RATE" value="50000000" />
@@ -506,7 +433,7 @@
  <connection
    kind="avalon_streaming"
    version="18.0"
-   start="FE_Streaming_Counter_0.avalon_streaming_source"
+   start="bme280_i2c_0.bme_output"
    end="FE_CPLD_Microphone_Encoder_Decoder_0.bme_input" />
  <connection
    kind="avalon_streaming"
@@ -542,22 +469,12 @@
    kind="clock"
    version="18.0"
    start="clk_0.clk"
-   end="FE_FPGA_Microphone_Encoder_Decoder_0.sys_clk" />
- <connection
-   kind="clock"
-   version="18.0"
-   start="clk_0.clk"
    end="FE_ICS52000_0.sys_clk" />
  <connection
    kind="clock"
    version="18.0"
    start="clk_0.clk"
    end="FE_NCP5623B_0.sys_clk" />
- <connection
-   kind="clock"
-   version="18.0"
-   start="clk_0.clk"
-   end="FE_Streaming_Counter_0.sys_clk" />
  <connection
    kind="reset"
    version="18.0"
@@ -568,11 +485,6 @@
    version="18.0"
    start="clk_0.clk_reset"
    end="FE_CPLD_Microphone_Encoder_Decoder_0.reset" />
- <connection
-   kind="reset"
-   version="18.0"
-   start="clk_0.clk_reset"
-   end="FE_FPGA_Microphone_Encoder_Decoder_0.reset" />
  <connection
    kind="reset"
    version="18.0"
@@ -588,11 +500,6 @@
    version="18.0"
    start="clk_0.clk_reset"
    end="FE_NCP5623B_0.reset" />
- <connection
-   kind="reset"
-   version="18.0"
-   start="clk_0.clk_reset"
-   end="FE_Streaming_Counter_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

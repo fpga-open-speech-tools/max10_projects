@@ -4,14 +4,10 @@ Progress: Loading CPLD_Microphone_Array/cx_system.qsys
 Progress: Reading input file
 Progress: Adding FE_CPLD_Microphone_Encoder_Decoder_0 [FE_CPLD_Microphone_Encoder_Decoder 1.0]
 Progress: Parameterizing module FE_CPLD_Microphone_Encoder_Decoder_0
-Progress: Adding FE_FPGA_Microphone_Encoder_Decoder_0 [FE_FPGA_Microphone_Encoder_Decoder 1.0]
-Progress: Parameterizing module FE_FPGA_Microphone_Encoder_Decoder_0
 Progress: Adding FE_ICS52000_0 [FE_ICS52000 1.0]
 Progress: Parameterizing module FE_ICS52000_0
 Progress: Adding FE_NCP5623B_0 [FE_NCP5623B 1.0]
 Progress: Parameterizing module FE_NCP5623B_0
-Progress: Adding FE_Streaming_Counter_0 [FE_Streaming_Counter 1.0]
-Progress: Parameterizing module FE_Streaming_Counter_0
 Progress: Adding altpll_0 [altpll 18.0]
 Progress: Parameterizing module altpll_0
 Progress: Adding bme280_i2c_0 [bme280_i2c 1.0]
@@ -22,9 +18,7 @@ Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
 Progress: Done reading input file
-Info: cx_system.FE_Streaming_Counter_0.avalon_streaming_source/FE_CPLD_Microphone_Encoder_Decoder_0.bme_input: The source has a channel signal of 8 bits, but the sink does not. Avalon-ST Adapter will be inserted.
 Info: cx_system.FE_ICS52000_0.mic_output/FE_CPLD_Microphone_Encoder_Decoder_0.mic_input: The source channel signal is 6 bits, but the sink is 5 bits. Avalon-ST Adapter will be inserted.
-Warning: cx_system.FE_FPGA_Microphone_Encoder_Decoder_0.bme_output: FE_FPGA_Microphone_Encoder_Decoder_0.bme_output must be connected to an Avalon-ST sink
 Warning: cx_system.altpll_0: altpll_0.pll_slave must be connected to an Avalon-MM master
 Info: qsys-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
@@ -35,14 +29,10 @@ Progress: Loading CPLD_Microphone_Array/cx_system.qsys
 Progress: Reading input file
 Progress: Adding FE_CPLD_Microphone_Encoder_Decoder_0 [FE_CPLD_Microphone_Encoder_Decoder 1.0]
 Progress: Parameterizing module FE_CPLD_Microphone_Encoder_Decoder_0
-Progress: Adding FE_FPGA_Microphone_Encoder_Decoder_0 [FE_FPGA_Microphone_Encoder_Decoder 1.0]
-Progress: Parameterizing module FE_FPGA_Microphone_Encoder_Decoder_0
 Progress: Adding FE_ICS52000_0 [FE_ICS52000 1.0]
 Progress: Parameterizing module FE_ICS52000_0
 Progress: Adding FE_NCP5623B_0 [FE_NCP5623B 1.0]
 Progress: Parameterizing module FE_NCP5623B_0
-Progress: Adding FE_Streaming_Counter_0 [FE_Streaming_Counter 1.0]
-Progress: Parameterizing module FE_Streaming_Counter_0
 Progress: Adding altpll_0 [altpll 18.0]
 Progress: Parameterizing module altpll_0
 Progress: Adding bme280_i2c_0 [bme280_i2c 1.0]
@@ -53,25 +43,18 @@ Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
 Progress: Done reading input file
-Info: cx_system.FE_Streaming_Counter_0.avalon_streaming_source/FE_CPLD_Microphone_Encoder_Decoder_0.bme_input: The source has a channel signal of 8 bits, but the sink does not. Avalon-ST Adapter will be inserted.
 Info: cx_system.FE_ICS52000_0.mic_output/FE_CPLD_Microphone_Encoder_Decoder_0.mic_input: The source channel signal is 6 bits, but the sink is 5 bits. Avalon-ST Adapter will be inserted.
-Warning: cx_system.FE_FPGA_Microphone_Encoder_Decoder_0.bme_output: FE_FPGA_Microphone_Encoder_Decoder_0.bme_output must be connected to an Avalon-ST sink
 Warning: cx_system.altpll_0: altpll_0.pll_slave must be connected to an Avalon-MM master
 Info: cx_system: Generating cx_system "cx_system" for QUARTUS_SYNTH
 Info: avalon_st_adapter: Inserting channel_adapter: channel_adapter_0
-Info: avalon_st_adapter_001: Inserting channel_adapter: channel_adapter_0
 Info: FE_CPLD_Microphone_Encoder_Decoder_0: "cx_system" instantiated FE_CPLD_Microphone_Encoder_Decoder "FE_CPLD_Microphone_Encoder_Decoder_0"
-Info: FE_FPGA_Microphone_Encoder_Decoder_0: "cx_system" instantiated FE_FPGA_Microphone_Encoder_Decoder "FE_FPGA_Microphone_Encoder_Decoder_0"
 Info: FE_ICS52000_0: "cx_system" instantiated FE_ICS52000 "FE_ICS52000_0"
 Info: FE_NCP5623B_0: "cx_system" instantiated FE_NCP5623B "FE_NCP5623B_0"
-Info: FE_Streaming_Counter_0: "cx_system" instantiated FE_Streaming_Counter "FE_Streaming_Counter_0"
 Info: altpll_0: "cx_system" instantiated altpll "altpll_0"
 Info: bme280_i2c_0: "cx_system" instantiated bme280_i2c "bme280_i2c_0"
 Info: avalon_st_adapter: "cx_system" instantiated altera_avalon_st_adapter "avalon_st_adapter"
-Info: avalon_st_adapter_001: "cx_system" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
 Info: rst_controller: "cx_system" instantiated altera_reset_controller "rst_controller"
 Info: channel_adapter_0: "avalon_st_adapter" instantiated channel_adapter "channel_adapter_0"
-Info: channel_adapter_0: "avalon_st_adapter_001" instantiated channel_adapter "channel_adapter_0"
-Info: cx_system: Done "cx_system" with 13 modules, 18 files
+Info: cx_system: Done "cx_system" with 9 modules, 14 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

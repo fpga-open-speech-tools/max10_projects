@@ -11,9 +11,6 @@
 			bme280_i2c_0_i2c_interface_i2c_data_wr   : out std_logic_vector(7 downto 0);                     -- i2c_data_wr
 			bme280_i2c_0_i2c_interface_i2c_ena       : out std_logic;                                        -- i2c_ena
 			bme280_i2c_0_i2c_interface_i2c_rw        : out std_logic;                                        -- i2c_rw
-			cfg_input_data                           : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
-			cfg_input_error                          : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			cfg_input_valid                          : in  std_logic                     := 'X';             -- valid
 			cfg_output_data                          : out std_logic_vector(15 downto 0);                    -- data
 			cfg_output_error                         : out std_logic_vector(1 downto 0);                     -- error
 			cfg_output_valid                         : out std_logic;                                        -- valid
@@ -22,11 +19,6 @@
 			fe_ics52000_0_cfg_input_data             : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
 			fe_ics52000_0_cfg_input_error            : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
 			fe_ics52000_0_cfg_input_valid            : in  std_logic                     := 'X';             -- valid
-			fpga_control_conduit_busy_out            : out std_logic;                                        -- busy_out
-			fpga_rj45_interface_serial_data_in       : in  std_logic                     := 'X';             -- serial_data_in
-			fpga_rj45_interface_serial_data_out      : out std_logic;                                        -- serial_data_out
-			fpga_rj45_interface_serial_clk_out       : out std_logic;                                        -- serial_clk_out
-			fpga_serial_clk_clk                      : in  std_logic                     := 'X';             -- clk
 			i2c_clk_clk                              : out std_logic;                                        -- clk
 			ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
 			ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    -- mic_ws_out
@@ -34,10 +26,6 @@
 			ics52000_physical_mics_rdy               : out std_logic;                                        -- mics_rdy
 			led_output_led_sd                        : out std_logic;                                        -- led_sd
 			led_output_led_ws                        : out std_logic;                                        -- led_ws
-			mic_output_channel                       : out std_logic_vector(3 downto 0);                     -- channel
-			mic_output_data                          : out std_logic_vector(31 downto 0);                    -- data
-			mic_output_error                         : out std_logic_vector(1 downto 0);                     -- error
-			mic_output_valid                         : out std_logic;                                        -- valid
 			ncp5623b_i2c_conduit_i2c_enable_out      : out std_logic;                                        -- i2c_enable_out
 			ncp5623b_i2c_conduit_i2c_address_out     : out std_logic_vector(6 downto 0);                     -- i2c_address_out
 			ncp5623b_i2c_conduit_i2c_rdwr_out        : out std_logic;                                        -- i2c_rdwr_out
@@ -48,15 +36,9 @@
 			ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := 'X';             -- i2c_rdy_in
 			pll_mclk_clk                             : out std_logic;                                        -- clk
 			reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
-			rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
-			rgb_input_error                          : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			rgb_input_valid                          : in  std_logic                     := 'X';             -- valid
 			rj45_interface_serial_data_in            : in  std_logic                     := 'X';             -- serial_data_in
 			rj45_interface_serial_data_out           : out std_logic;                                        -- serial_data_out
-			serial_clk_clk                           : in  std_logic                     := 'X';             -- clk
-			bme_output_data                          : out std_logic_vector(95 downto 0);                    -- data
-			bme_output_error                         : out std_logic_vector(1 downto 0);                     -- error
-			bme_output_valid                         : out std_logic                                         -- valid
+			serial_clk_clk                           : in  std_logic                     := 'X'              -- clk
 		);
 	end component cx_system;
 
@@ -73,9 +55,6 @@
 			bme280_i2c_0_i2c_interface_i2c_data_wr   => CONNECTED_TO_bme280_i2c_0_i2c_interface_i2c_data_wr,   --                             .i2c_data_wr
 			bme280_i2c_0_i2c_interface_i2c_ena       => CONNECTED_TO_bme280_i2c_0_i2c_interface_i2c_ena,       --                             .i2c_ena
 			bme280_i2c_0_i2c_interface_i2c_rw        => CONNECTED_TO_bme280_i2c_0_i2c_interface_i2c_rw,        --                             .i2c_rw
-			cfg_input_data                           => CONNECTED_TO_cfg_input_data,                           --                    cfg_input.data
-			cfg_input_error                          => CONNECTED_TO_cfg_input_error,                          --                             .error
-			cfg_input_valid                          => CONNECTED_TO_cfg_input_valid,                          --                             .valid
 			cfg_output_data                          => CONNECTED_TO_cfg_output_data,                          --                   cfg_output.data
 			cfg_output_error                         => CONNECTED_TO_cfg_output_error,                         --                             .error
 			cfg_output_valid                         => CONNECTED_TO_cfg_output_valid,                         --                             .valid
@@ -84,11 +63,6 @@
 			fe_ics52000_0_cfg_input_data             => CONNECTED_TO_fe_ics52000_0_cfg_input_data,             --      fe_ics52000_0_cfg_input.data
 			fe_ics52000_0_cfg_input_error            => CONNECTED_TO_fe_ics52000_0_cfg_input_error,            --                             .error
 			fe_ics52000_0_cfg_input_valid            => CONNECTED_TO_fe_ics52000_0_cfg_input_valid,            --                             .valid
-			fpga_control_conduit_busy_out            => CONNECTED_TO_fpga_control_conduit_busy_out,            --         fpga_control_conduit.busy_out
-			fpga_rj45_interface_serial_data_in       => CONNECTED_TO_fpga_rj45_interface_serial_data_in,       --          fpga_rj45_interface.serial_data_in
-			fpga_rj45_interface_serial_data_out      => CONNECTED_TO_fpga_rj45_interface_serial_data_out,      --                             .serial_data_out
-			fpga_rj45_interface_serial_clk_out       => CONNECTED_TO_fpga_rj45_interface_serial_clk_out,       --                             .serial_clk_out
-			fpga_serial_clk_clk                      => CONNECTED_TO_fpga_serial_clk_clk,                      --              fpga_serial_clk.clk
 			i2c_clk_clk                              => CONNECTED_TO_i2c_clk_clk,                              --                      i2c_clk.clk
 			ics52000_physical_mic_data_in            => CONNECTED_TO_ics52000_physical_mic_data_in,            --            ics52000_physical.mic_data_in
 			ics52000_physical_mic_ws_out             => CONNECTED_TO_ics52000_physical_mic_ws_out,             --                             .mic_ws_out
@@ -96,10 +70,6 @@
 			ics52000_physical_mics_rdy               => CONNECTED_TO_ics52000_physical_mics_rdy,               --                             .mics_rdy
 			led_output_led_sd                        => CONNECTED_TO_led_output_led_sd,                        --                   led_output.led_sd
 			led_output_led_ws                        => CONNECTED_TO_led_output_led_ws,                        --                             .led_ws
-			mic_output_channel                       => CONNECTED_TO_mic_output_channel,                       --                   mic_output.channel
-			mic_output_data                          => CONNECTED_TO_mic_output_data,                          --                             .data
-			mic_output_error                         => CONNECTED_TO_mic_output_error,                         --                             .error
-			mic_output_valid                         => CONNECTED_TO_mic_output_valid,                         --                             .valid
 			ncp5623b_i2c_conduit_i2c_enable_out      => CONNECTED_TO_ncp5623b_i2c_conduit_i2c_enable_out,      --         ncp5623b_i2c_conduit.i2c_enable_out
 			ncp5623b_i2c_conduit_i2c_address_out     => CONNECTED_TO_ncp5623b_i2c_conduit_i2c_address_out,     --                             .i2c_address_out
 			ncp5623b_i2c_conduit_i2c_rdwr_out        => CONNECTED_TO_ncp5623b_i2c_conduit_i2c_rdwr_out,        --                             .i2c_rdwr_out
@@ -110,14 +80,8 @@
 			ncp5623b_i2c_conduit_i2c_rdy_in          => CONNECTED_TO_ncp5623b_i2c_conduit_i2c_rdy_in,          --                             .i2c_rdy_in
 			pll_mclk_clk                             => CONNECTED_TO_pll_mclk_clk,                             --                     pll_mclk.clk
 			reset_reset_n                            => CONNECTED_TO_reset_reset_n,                            --                        reset.reset_n
-			rgb_input_data                           => CONNECTED_TO_rgb_input_data,                           --                    rgb_input.data
-			rgb_input_error                          => CONNECTED_TO_rgb_input_error,                          --                             .error
-			rgb_input_valid                          => CONNECTED_TO_rgb_input_valid,                          --                             .valid
 			rj45_interface_serial_data_in            => CONNECTED_TO_rj45_interface_serial_data_in,            --               rj45_interface.serial_data_in
 			rj45_interface_serial_data_out           => CONNECTED_TO_rj45_interface_serial_data_out,           --                             .serial_data_out
-			serial_clk_clk                           => CONNECTED_TO_serial_clk_clk,                           --                   serial_clk.clk
-			bme_output_data                          => CONNECTED_TO_bme_output_data,                          --                   bme_output.data
-			bme_output_error                         => CONNECTED_TO_bme_output_error,                         --                             .error
-			bme_output_valid                         => CONNECTED_TO_bme_output_valid                          --                             .valid
+			serial_clk_clk                           => CONNECTED_TO_serial_clk_clk                            --                   serial_clk.clk
 		);
 
