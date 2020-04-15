@@ -205,7 +205,7 @@ set_instance_assignment -name IO_STANDARD "2.5 V" -to LED5
 set_global_assignment -name PROJECT_IP_REGENERATION_POLICY ALWAYS_REGENERATE_IP
 set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
-set_global_assignment -name ENABLE_SIGNALTAP ON
+set_global_assignment -name ENABLE_SIGNALTAP OFF
 set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp1.stp
 set_location_assignment PIN_62 -to BME280_SDA
 set_instance_assignment -name IO_STANDARD "2.5 V" -to BME280_SDA
