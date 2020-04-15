@@ -78,10 +78,14 @@ component cx_system is
     serial_clk_clk                           : in  std_logic                     := 'X';             -- serial_clk_in
     rj45_interface_serial_data_in            : in  std_logic                     := 'X';             -- serial_data_in
     rj45_interface_serial_data_out           : out std_logic;                                        -- serial_data_out
+    cfg_output_data                          : out std_logic_vector(15 downto 0);                    -- data
+    cfg_output_error                         : out std_logic_vector(1 downto 0);                     -- error
+    cfg_output_valid                         : out std_logic;                                        -- valid
     control_conduit_busy_out                 : out std_logic;                                        -- busy_out
     ics52000_physical_mic_data_in            : in  std_logic_vector(15 downto 0) := (others => 'X'); -- mic_data_in
     ics52000_physical_mic_ws_out             : out std_logic_vector(15 downto 0);                    -- mic_ws_out
     ics52000_physical_clk                    : out std_logic_vector(3 downto 0);                      -- clk
+    ics52000_physical_mics_rdy               : out std_logic;
     fe_ics52000_0_cfg_input_data             : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
     fe_ics52000_0_cfg_input_error            : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
     fe_ics52000_0_cfg_input_valid            : in  std_logic                     := 'X';            -- valid
@@ -102,8 +106,10 @@ component cx_system is
     ncp5623b_i2c_conduit_i2c_bsy_in          : in  std_logic                     := 'X';             -- i2c_bsy_in
     ncp5623b_i2c_conduit_i2c_data_read_in    : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- i2c_data_read_in
     ncp5623b_i2c_conduit_i2c_req_out         : out std_logic;                                        -- i2c_req_out
-    ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := 'X'              -- i2c_rdy_in
-
+    ncp5623b_i2c_conduit_i2c_rdy_in          : in  std_logic                     := 'X';             -- i2c_rdy_in
+    rgb_input_data                           : in  std_logic_vector(15 downto 0) := (others => 'X'); -- data
+    rgb_input_error                          : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+    rgb_input_valid                          : in  std_logic                     := 'X'              -- valid
   );
 end component cx_system;
   
@@ -153,7 +159,27 @@ signal rgb_en               : std_logic;
       
 signal delay_counter        : unsigned(31 downto 0) := (others => '0');
 signal delay_value          : unsigned(31 downto 0) := x"02FAF080";
-    
+
+signal GREEN                : std_logic_vector(14 downto 0) := std_logic_vector(to_unsigned(0, 5))&
+                                                               std_logic_vector(to_unsigned(28, 5))&
+                                                               std_logic_vector(to_unsigned(1, 5));
+                                                               
+signal ORANGE               : std_logic_vector(14 downto 0) := std_logic_vector(to_unsigned(31, 5))&
+                                                               std_logic_vector(to_unsigned(10, 5))&
+                                                               std_logic_vector(to_unsigned(0, 5));
+                                                               
+signal BLUE                 : std_logic_vector(14 downto 0) := std_logic_vector(to_unsigned(0, 5))&
+                                                               std_logic_vector(to_unsigned(0, 5))&
+                                                               std_logic_vector(to_unsigned(31, 5));
+                                                               
+signal RED                  : std_logic_vector(14 downto 0) := std_logic_vector(to_unsigned(31, 5))& 
+                                                               std_logic_vector(to_unsigned(0, 5))&
+                                                               std_logic_vector(to_unsigned(0, 5));
+
+signal VIOLET               : std_logic_vector(14 downto 0) := std_logic_vector(to_unsigned(16, 5))&
+                                                               std_logic_vector(to_unsigned(0, 5))&
+                                                               std_logic_vector(to_unsigned(25, 5));
+
 signal MAX_OUTPUT           : std_logic_vector(4 downto 0) := "01111";
     
 signal ILED_OUTPUT          : std_logic_vector(2 downto 0) := "001";
@@ -161,7 +187,7 @@ signal PWM1                 : std_logic_vector(2 downto 0) := "010";
 signal PWM2                 : std_logic_vector(2 downto 0) := "011";
 signal PWM3                 : std_logic_vector(2 downto 0) := "100";
     
-signal PWM1_COLOR           : std_logic_vector(4 downto 0) := "00000";
+signal PWM1_COLOR           : std_logic_vector(4 downto 0) := "11111";
 signal PWM2_COLOR           : std_logic_vector(4 downto 0) := "00000";
 signal PWM3_COLOR           : std_logic_vector(4 downto 0) := "00000";
     
@@ -240,11 +266,16 @@ pd : cx_system
     rj45_interface_serial_data_in             => rj45_sdi_r,                --                        .serial_data_in
     rj45_interface_serial_data_out            => rj45_sdo_r,                --                        .serial_data_out
     control_conduit_busy_out                  => open,                                        -- busy_out
-                                              
+    
+    cfg_output_data                          => cfg_data,                          --                   cfg_output.data
+    cfg_output_error                         => open,                         --                             .error
+    cfg_output_valid                         => cfg_valid,                         --                             .valid
+
     ics52000_physical_mic_data_in             => mic_data_in,       --       ics52000_physical.mic_data_in
     ics52000_physical_mic_ws_out              => mic_ws_out,        --                        .mic_ws_out
     ics52000_physical_clk                     => mic_clk_out,                --                        .clk
-   
+    ics52000_physical_mics_rdy                => mics_rdy,
+    
     bme280_i2c_0_control_conduit_busy_out     => bme_busy,    -- bme280_i2c_0_control_conduit.busy_out
 	  bme280_i2c_0_control_conduit_continuous   => bme_continuous,  --                             .continuous
 	  bme280_i2c_0_control_conduit_enable       => bme_enable,      --                             .enable
@@ -264,8 +295,27 @@ pd : cx_system
     ncp5623b_i2c_conduit_i2c_bsy_in           => i2c_bsy,          --                             .i2c_bsy_in
     ncp5623b_i2c_conduit_i2c_data_read_in     => open,    --                             .i2c_data_read_in
     ncp5623b_i2c_conduit_i2c_req_out          => rgb_req,         --                             .i2c_req_out
-    ncp5623b_i2c_conduit_i2c_rdy_in           => rgb_en           --                             .i2c_rdy_in
+    ncp5623b_i2c_conduit_i2c_rdy_in           => rgb_en,           --                             .i2c_rdy_in
+    
+    rgb_input_data                            => rgb_data,
+    rgb_input_valid                           => rgb_valid,
+    rgb_input_error                           => open
   );
+  
+state_select: process(CLK_50,RESET_N)
+begin 
+  if RESET_N = '0' then 
+    rgb_data <= '0' & BLUE;
+  elsif rising_edge(CLK_50) then 
+    if to_integer(unsigned(cfg_data)) = 0 then 
+      rgb_data <= '0' & ORANGE;
+    elsif mics_rdy = '0' then 
+      rgb_data <= '0' & VIOLET;
+    else
+      rgb_data <= '0' & GREEN;
+    end if;
+  end if;
+end process;
 
 
 i2c_component : i2c_master 
@@ -286,16 +336,16 @@ i2c_component : i2c_master
   i2c_control_p : process(CLK_50)
   begin
 	if rising_edge(CLK_50) then
-	  if bme_busy = '1' then
+	  if bme_busy = '1' and rgb_req = '0' then
 	  	i2c_control <= bme_i2c;
       rgb_en <= '0';
-      LED_GREEN <= '1';
-      LED_YELLOW <= '0';
-	  else 
+      LED_GREEN <= '0';
+      LED_YELLOW <= '1';
+	  else
 	  	i2c_control <= rgb_i2c;
       rgb_en <= '1';
-      LED_GREEN <= '1';
-      LED_YELLOW <= '0';
+      LED_GREEN <= '0';
+      LED_YELLOW <= '1';
 	  end if;
 	end if;
   end process;
@@ -329,19 +379,19 @@ i2c_component : i2c_master
         if PWM1_COLOR = "10000" then 
           PWM1_COLOR <= "00000";
         else 
-          PWM1_COLOR <= std_logic_vector(unsigned(PWM1_COLOR) + 1);
+          PWM1_COLOR <= std_logic_vector(unsigned(PWM1_COLOR) + 20);
         end if;
         if PWM2_COLOR = "10000" then 
           PWM2_COLOR <= "00000";
         else 
-          PWM2_COLOR <= std_logic_vector(unsigned(PWM2_COLOR) + 1);
+          PWM2_COLOR <= std_logic_vector(unsigned(PWM2_COLOR) + 20);
         end if;
         if PWM3_COLOR = "10000" then 
           PWM3_COLOR <= "00000";
         else 
-          PWM3_COLOR <= std_logic_vector(unsigned(PWM3_COLOR) + 1);
+          PWM3_COLOR <= std_logic_vector(unsigned(PWM3_COLOR) + 20);
         end if;
-        rgb_data <= "0" & PWM1_COLOR & PWM2_COLOR & PWM3_COLOR;
+        --rgb_data <= "0" & PWM1_COLOR & PWM2_COLOR & PWM3_COLOR;
         rgb_valid <= '1';
       else
         rgb_data <= rgb_data;
@@ -349,9 +399,9 @@ i2c_component : i2c_master
       end if;
       
       
-      PWM1_COLOR <= "11111";
-      PWM2_COLOR <= "00000";
-      PWM3_COLOR <= "00000";
+      -- PWM1_COLOR <= "11111";
+      -- PWM2_COLOR <= "00000";
+      -- PWM3_COLOR <= "00000";
     end if;
   end process;
    

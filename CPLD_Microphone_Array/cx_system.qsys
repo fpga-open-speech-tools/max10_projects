@@ -78,7 +78,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -219,6 +219,11 @@
    dir="end" />
  <interface name="pll_mclk" internal="altpll_0.c0" type="clock" dir="start" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
+ <interface
+   name="rgb_input"
+   internal="FE_NCP5623B_0.rgb_input"
+   type="avalon_streaming"
+   dir="end" />
  <interface
    name="rj45_interface"
    internal="FE_CPLD_Microphone_Encoder_Decoder_0.RJ45_Interface"
@@ -421,7 +426,7 @@
  </module>
  <module name="bme280_i2c_0" kind="bme280_i2c" version="1.0" enabled="1">
   <parameter name="input_clk" value="50000000" />
-  <parameter name="reads_per_second" value="16" />
+  <parameter name="reads_per_second" value="1" />
   <parameter name="sdo" value="0" />
  </module>
  <module name="clk_0" kind="clock_source" version="18.0" enabled="1">
@@ -440,11 +445,6 @@
    version="18.0"
    start="FE_ICS52000_0.mic_output"
    end="FE_CPLD_Microphone_Encoder_Decoder_0.mic_input" />
- <connection
-   kind="avalon_streaming"
-   version="18.0"
-   start="FE_CPLD_Microphone_Encoder_Decoder_0.rgb_output"
-   end="FE_NCP5623B_0.rgb_input" />
  <connection
    kind="clock"
    version="18.0"

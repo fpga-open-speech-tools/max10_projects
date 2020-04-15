@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="cx_system" kind="cx_system" version="1.0" fabric="QSYS">
  <!-- Format version 18.0 614 (Future versions may contain additional information.) -->
- <!-- 2020.03.30.09:37:26 -->
+ <!-- 2020.04.15.10:16:38 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1585582646</value>
+  <value>1586967398</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -4023,7 +4023,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="reads_per_second">
    <type>int</type>
-   <value>16</value>
+   <value>1</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -4802,33 +4802,6 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>mic_input</endConnectionPoint>
  </connection>
  <connection
-   name="FE_CPLD_Microphone_Encoder_Decoder_0.rgb_output/FE_NCP5623B_0.rgb_input"
-   kind="avalon_streaming"
-   version="18.0"
-   start="FE_CPLD_Microphone_Encoder_Decoder_0.rgb_output"
-   end="FE_NCP5623B_0.rgb_input">
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>FE_CPLD_Microphone_Encoder_Decoder_0</startModule>
-  <startConnectionPoint>rgb_output</startConnectionPoint>
-  <endModule>FE_NCP5623B_0</endModule>
-  <endConnectionPoint>rgb_input</endConnectionPoint>
- </connection>
- <connection
    name="altpll_0.c1/FE_ICS52000_0.mic_clk_in"
    kind="clock"
    version="18.0"
@@ -5262,7 +5235,7 @@ parameters are a RESULT of the module parameters. -->
   <version>18.0</version>
  </plugin>
  <plugin>
-  <instanceCount>3</instanceCount>
+  <instanceCount>2</instanceCount>
   <name>avalon_streaming</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
