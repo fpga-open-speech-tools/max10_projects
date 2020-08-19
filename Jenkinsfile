@@ -3,6 +3,18 @@ working_branch = "master"
 pipeline {
     agent { label 'Windows_Node2'}
     stages {
+        stage('Determine Branch'){
+            steps {
+                script {
+                    if(env.CHANGE_ID) {
+                        working_branch = env.CHANGE_BRANCH
+                    }
+                    else {
+                        working_branch = env.BRANCH_NAME
+                    }
+                }
+            }
+        }
         stage ('Build') {
             parallel {
                 stage('BME280') {
