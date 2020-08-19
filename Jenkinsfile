@@ -4,12 +4,14 @@ pipeline {
     agent { label 'Windows_Node2'}
     stages {
         stage ('Build') {
-            script {
-                if(env.CHANGE_ID) {
-                    working_branch = env.CHANGE_BRANCH
-                }
-                else{
-                    working_branch = env.BRANCH_NAME
+            steps{
+                script {
+                    if(env.CHANGE_ID) {
+                        working_branch = env.CHANGE_BRANCH
+                    }
+                    else{
+                        working_branch = env.BRANCH_NAME
+                    }
                 }
             }
             parallel {
