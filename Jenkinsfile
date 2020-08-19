@@ -6,6 +6,8 @@ pipeline {
         stage('Determine Branch'){
             steps {
                 script {
+                    // If its a pull request, CHANGE_ID will be set
+                    // Then set the branch to the origin branch of the pull request
                     if(env.CHANGE_ID) {
                         working_branch = env.CHANGE_BRANCH
                     }
