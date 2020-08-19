@@ -1,11 +1,11 @@
-
+working_branch = "master"
 
 pipeline {
     agent { label 'Windows_Node2'}
     stages {
-        stage ('Build') {
+        stage('Determine Branch'){
             steps{
-                script {
+                script{
                     if(env.CHANGE_ID) {
                         working_branch = env.CHANGE_BRANCH
                     }
@@ -13,6 +13,10 @@ pipeline {
                         working_branch = env.BRANCH_NAME
                     }
                 }
+            }
+        }
+        stage ('Build') {
+            steps{
                 parallel {
                     stage('BME280') {
                         when { changeset "CPLD_BME280_I2C/*"}
