@@ -4,12 +4,12 @@ pipeline {
     agent { label 'Windows_Node2'}
     stages {
         stage('Determine Branch'){
-            steps{
-                script{
+            steps {
+                script {
                     if(env.CHANGE_ID) {
                         working_branch = env.CHANGE_BRANCH
                     }
-                    else{
+                    else {
                         working_branch = env.BRANCH_NAME
                     }
                 }
